@@ -14,6 +14,14 @@ const projects = [
     Githublink: "https://github.com/Hadi-Baydoun/Arcade",
   },
   {
+    title: "SwiftBuy | Ecommerce",
+   /* cardImage: "assets/images/design/ProjetoPizza.png",*/
+    cardImage: "/images/swiftbuy.png",
+    /* tagimg: "https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png", */
+    Previewlink: "https://swift-buy.vercel.app/",
+    Githublink: "https://github.com/Hadi-Baydoun/SwiftBuy",
+  },
+  {
     title: "Designo",
     cardImage: "/images/designo.png",
     tagimg: "https://cdn.iconscout.com/icon/free/png-512/react-1-282599.png",
