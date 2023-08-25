@@ -1,5 +1,5 @@
 # Portfolio
-![port](https://github.com/Hadi-Baydoun/Portfolio/assets/106028128/3a566d0c-7c18-49f7-afaa-9fb9f9d4061f)
 
-This Portfolio was made with HTML, CSS, and JavaScript
+![capture](https://github.com/Hadi-Baydoun/Portfolio/assets/106028128/5cb47e6a-30f9-4411-9314-df5e76ec6d42)
+
 Live Website: https://portfolio-eight-neon-51.vercel.app/
