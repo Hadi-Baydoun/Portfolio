@@ -6,7 +6,7 @@ const moocs = document.querySelector(".moocs");
 const moocscards = [
   {
     title: " IT Essentials Certification by CISCO",
-    cardImage: "assets/images/designs/coursera.png",
+    cardImage: "/images/ITE.png",
     
   },
   {
@@ -23,7 +23,7 @@ const moocscards = [
   
   {
     title: " IC3 Certification",
-    cardImage: "assets/images/designs/javascript.png",
+    cardImage: "/images/IC3.png",
   },
 
 ];

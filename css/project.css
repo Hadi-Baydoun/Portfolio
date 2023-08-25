@@ -56,6 +56,13 @@ html[data-theme="light"] {
     outline: none;
     /* Not ideal for accessibility */
   }
+
+  .skills-column{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+  }
   
   .light-mode-button span:nth-child(1) {
     position: absolute;
