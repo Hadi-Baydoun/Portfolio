@@ -84,6 +84,7 @@ const Skills = () => (
                     whileHover={{ y: -6, scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 260, damping: 18 }}
                 >
+
                     <div className="group relative">
                         <div
                             aria-hidden
