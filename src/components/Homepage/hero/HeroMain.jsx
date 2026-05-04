@@ -2,8 +2,8 @@ import { Fragment, useLayoutEffect, useRef, useState, useEffect } from "react";
 import { motion, useSpring } from "framer-motion";
 
 import {
-  CODEMASTER_RELLAX_RIGHT,
-  CODEMASTER_RELLAX_TREE,
+  HERO_RELLAX_RIGHT,
+  HERO_RELLAX_TREE,
   TREE_BLUR_DECOR_AFTER_DESIGN,
   TREE_BLUR_DECOR_FINAL,
 } from "./heroLayersData";
@@ -402,7 +402,7 @@ export function HeroMain() {
 
       <section className="section">
         <motion.div
-          className="codemaster-content codemaster-content--creative"
+          className="hero-visual hero-visual--creative"
           initial={{ opacity: 0, y: 48 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
@@ -415,26 +415,26 @@ export function HeroMain() {
           >
             <LazySwapImage
               className="lazy"
-              src={MAIN_IMG.codemasterHouse}
-              dataSrc={MAIN_IMG.codemasterHouse}
+              src={MAIN_IMG.heroHouse}
+              dataSrc={MAIN_IMG.heroHouse}
               alt="The place where all the coding and the designing happens"
             />
             <div className="image-animation-container">
-              <div className="code-master-animation"></div>
+              <div className="hero-logo-lottie"></div>
             </div>
             <div
-              className={CODEMASTER_RELLAX_TREE.wrapperClass}
-              {...CODEMASTER_RELLAX_TREE.attrs}
+              className={HERO_RELLAX_TREE.wrapperClass}
+              {...HERO_RELLAX_TREE.attrs}
             >
               <img
-                className={CODEMASTER_RELLAX_TREE.imgClass}
+                className={HERO_RELLAX_TREE.imgClass}
                 src={MAIN_IMG.treeBlurLeft}
-                alt={CODEMASTER_RELLAX_TREE.alt}
+                alt={HERO_RELLAX_TREE.alt}
               />
             </div>
           </motion.div>
           <motion.div
-            className="images images--right codemaster-content__panel"
+            className="images images--right hero-visual__panel"
             initial={{ opacity: 0, x: 36 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.4 }}
@@ -448,13 +448,13 @@ export function HeroMain() {
               </h3>
             </div>
             <div
-              className={CODEMASTER_RELLAX_RIGHT.wrapperClass}
-              {...CODEMASTER_RELLAX_RIGHT.attrs}
+              className={HERO_RELLAX_RIGHT.wrapperClass}
+              {...HERO_RELLAX_RIGHT.attrs}
             >
               <img
-                className={CODEMASTER_RELLAX_RIGHT.imgClass}
+                className={HERO_RELLAX_RIGHT.imgClass}
                 src={MAIN_IMG.treeBlurRight}
-                alt={CODEMASTER_RELLAX_RIGHT.alt}
+                alt={HERO_RELLAX_RIGHT.alt}
               />
             </div>
           </motion.div>

@@ -870,7 +870,7 @@
   }
 }
 
-.codemaster-content {
+.hero-visual {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -879,7 +879,7 @@
 }
 
 @media only screen and (min-width: 768px) {
-  .codemaster-content {
+  .hero-visual {
     flex-wrap: unset;
     justify-content: center;
     margin-top: -200px;
@@ -888,30 +888,30 @@
 }
 
 @media only screen and (min-width: 1248px) {
-  .codemaster-content {
+  .hero-visual {
     margin-bottom: -200px;
   }
 }
 
-.codemaster-content .images--left {
+.hero-visual .images--left {
   width: 80%;
   left: 0;
   position: relative;
 }
 
 @media only screen and (min-width: 480px) {
-  .codemaster-content .images--left {
+  .hero-visual .images--left {
     width: 60%;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .codemaster-content .images--left {
+  .hero-visual .images--left {
     width: 50%;
   }
 }
 
-.codemaster-content .images--left .tree--left-blur {
+.hero-visual .images--left .tree--left-blur {
   position: absolute;
   bottom: -20%;
   left: 0;
@@ -920,21 +920,21 @@
 }
 
 @media only screen and (min-width: 480px) {
-  .codemaster-content .images--left .tree--left-blur {
+  .hero-visual .images--left .tree--left-blur {
     bottom: -30%;
     width: 35vw;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .codemaster-content .images--left .tree--left-blur {
+  .hero-visual .images--left .tree--left-blur {
     display: block;
     bottom: 0;
     width: 25vw;
   }
 }
 
-.codemaster-content .images--left .image-animation-container {
+.hero-visual .images--left .image-animation-container {
   overflow: hidden;
   margin: 0 auto;
   width: 100%;
@@ -944,45 +944,45 @@
   text-align: right;
 }
 
-.codemaster-content
+.hero-visual
   .images--left
   .image-animation-container
-  .code-master-animation {
+  .hero-logo-lottie {
   width: 30% !important;
   display: inline-block;
   left: 3%;
   position: relative;
 }
 
-.codemaster-content .images--right {
+.hero-visual .images--right {
   width: 100%;
   position: relative;
 }
 
 @media only screen and (min-width: 768px) {
-  .codemaster-content .images--right {
+  .hero-visual .images--right {
     width: 60%;
   }
 }
 
-.codemaster-content .images--right .title-container {
+.hero-visual .images--right .title-container {
   padding: 0 1em;
 }
 
 @media only screen and (min-width: 480px) {
-  .codemaster-content .images--right .title-container {
+  .hero-visual .images--right .title-container {
     padding: 0 2em;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  .codemaster-content .images--right .title-container {
+  .hero-visual .images--right .title-container {
     padding: 0;
   }
 }
 
-.codemaster-content .images--right .title-container h2,
-.codemaster-content .images--right .title-container h3 {
+.hero-visual .images--right .title-container h2,
+.hero-visual .images--right .title-container h3 {
   width: 100%;
   text-align: left;
   margin: 0 auto;
@@ -990,17 +990,17 @@
 }
 
 @media only screen and (min-width: 768px) {
-  .codemaster-content .images--right .title-container h2,
-  .codemaster-content .images--right .title-container h3 {
+  .hero-visual .images--right .title-container h2,
+  .hero-visual .images--right .title-container h3 {
     width: 70%;
   }
 }
 
-.codemaster-content .images--right .tree {
+.hero-visual .images--right .tree {
   position: absolute;
 }
 
-.codemaster-content .images--right .tree.tree--bottom-blur {
+.hero-visual .images--right .tree.tree--bottom-blur {
   width: 20vw;
   top: 100px;
   right: 0;
@@ -1008,14 +1008,14 @@
 }
 
 @media only screen and (min-width: 480px) {
-  .codemaster-content .images--right .tree.tree--bottom-blur {
+  .hero-visual .images--right .tree.tree--bottom-blur {
     width: 30%;
     top: 120px;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .codemaster-content .images--right .tree.tree--bottom-blur {
+  .hero-visual .images--right .tree.tree--bottom-blur {
     display: block;
   }
 }
@@ -1285,7 +1285,7 @@
   }
 }
 
-.codemaster-content--creative .images--right {
+.hero-visual--creative .images--right {
   align-self: flex-start;
   /* ~halfway between centered (default) and full flex-start */
   margin-top: clamp(2rem, 4.5vw, 120px);
@@ -1293,7 +1293,7 @@
 }
 
 @media only screen and (min-width: 1024px) {
-  .codemaster-content--creative .images--right {
+  .hero-visual--creative .images--right {
     align-self: flex-start;
     /* ~halfway between centered (default) and full flex-start */
     margin-top: clamp(30rem, 16vw, 180px);
@@ -1301,13 +1301,13 @@
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1023px) {
-  .codemaster-content--creative .images--right {
+  .hero-visual--creative .images--right {
     align-self: flex-start;
     margin-top: clamp(17rem, 10vw, 100px);
   }
 }
 
-.codemaster-content--creative .images--left img {
+.hero-visual--creative .images--left img {
   filter: drop-shadow(0 30px 40px rgba(66, 26, 52, 0.14));
 }
 

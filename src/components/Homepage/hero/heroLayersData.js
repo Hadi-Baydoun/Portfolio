@@ -81,7 +81,7 @@ export const HEADER_TREES = [
   },
 ];
 
-export const CODEMASTER_RELLAX_TREE = {
+export const HERO_RELLAX_TREE = {
   wrapperClass: "rellax tree--left-blur",
   attrs: {
     "data-rellax-percentage": "0.5",
@@ -95,7 +95,7 @@ export const CODEMASTER_RELLAX_TREE = {
   alt: "a close up blur tree of the forest",
 };
 
-export const CODEMASTER_RELLAX_RIGHT = {
+export const HERO_RELLAX_RIGHT = {
   wrapperClass: "rellax tree tree--bottom-blur",
   attrs: {
     "data-rellax-percentage": "0.5",

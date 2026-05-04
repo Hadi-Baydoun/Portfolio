@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import imgMenuHome from "@/assets/Homepage/menu-home.jpg";
+import imgMenuSkills from "@/assets/Explore/portfolio-header-background.svg";
+import imgMenuContact from "@/assets/Contact/contact-header-background.svg";
 import imgGithub from "@/assets/Homepage/github.svg";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -68,13 +70,13 @@ const Navbar = () => {
         {
             label: "Skills",
             path: "/explore#hero",
-            bg: "https://code-master.be/images/navigation/menu-portfolio.jpg",
+            bg: imgMenuSkills,
             bgColor: "#1d7d97",
         },
         {
             label: "Contact",
             path: "/contact#hero",
-            bg: "https://code-master.be/images/navigation/menu-contact.jpg",
+            bg: imgMenuContact,
             bgColor: "#fbc292",
         },
     ];

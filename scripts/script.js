@@ -96,7 +96,7 @@ export async function initHomepage() {
 
   if (logoDark) {
     try {
-      const animationData = await fetchLottieJson("codemaster-logo-dark-sm.json");
+      const animationData = await fetchLottieJson("hero-logo-dark-sm.json");
       logoAnimation = lottie.loadAnimation({
         container: logoDark,
         renderer: "svg",
@@ -129,14 +129,14 @@ export async function initHomepage() {
   await bindSectionLottie(".design", "design.json");
   await bindSectionLottie(".development", "development.json");
 
-  const codeMasterEl = document.querySelector(".code-master-animation");
+  const heroLogoLottieEl = document.querySelector(".hero-logo-lottie");
   let formScrollTimeout = null;
 
-  if (codeMasterEl) {
+  if (heroLogoLottieEl) {
     try {
-      const animationData = await fetchLottieJson("code-master.json");
+      const animationData = await fetchLottieJson("hero-logo.json");
       const g = lottie.loadAnimation({
-        container: codeMasterEl,
+        container: heroLogoLottieEl,
         renderer: "svg",
         loop: true,
         autoplay: true,
