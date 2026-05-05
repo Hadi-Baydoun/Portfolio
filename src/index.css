@@ -325,7 +325,7 @@ strong {
 }
 
 .highlight {
-  color: #ff6563;
+  color: #f15533;
 }
 
 .index-1 {
@@ -892,7 +892,7 @@ form button {
 }
 
 .required {
-  color: #ff6563;
+  color: #f15533;
 }
 
 label {
@@ -3683,7 +3683,7 @@ footer .footer-home-decoration-2 {
   bottom: -4px;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #ff6563, #ffbb71);
+  background: linear-gradient(90deg, #f15533, #ffbb71);
   border-radius: 3px;
   transform-origin: left;
 }
@@ -4055,7 +4055,7 @@ body.menu-open {
   }
 
   .socials-item a:hover {
-    background: #ff6563;
+    background: #f15533;
   }
 }
 

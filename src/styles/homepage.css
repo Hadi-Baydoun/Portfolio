@@ -1023,7 +1023,7 @@
   isolation: isolate;
   overflow-x: clip;
   overflow-y: visible;
-  padding: 4em 0 5em;
+  padding: 1em 0 1em 0;
   border-radius: 36px;
 }
 
@@ -1315,6 +1315,15 @@
   gap: 1.5em 0;
 }
 
+/* Rows without connector: one copy column per row — push “right” cards to track side on desktop */
+@media only screen and (min-width: 1024px) {
+  .hero-process-steps
+    .linear-content--creative.linear-content--solo-copy
+    > .linear-block--copy.linear-block--right {
+    margin-left: 44%;
+  }
+}
+
 .linear-content--creative::before {
   content: "";
   position: absolute;
@@ -1347,6 +1356,13 @@
   box-shadow: 0 24px 64px rgba(66, 26, 52, 0.1);
 }
 
+@media only screen and (min-width: 1024px) {
+  .linear-block__card {
+    width: 45rem;
+    max-width: 46rem;
+  }
+}
+
 .linear-block__card::before {
   content: "";
   position: absolute;
@@ -1368,6 +1384,135 @@
 /* Work experience (`linear-content--creative`): keep copy left-aligned on all breakpoints */
 .linear-content--creative .linear-block.linear-block--copy {
   text-align: left;
+}
+
+/* Experience cards: step index (1–3) outside card — card width unchanged */
+.linear-block--experience-step {
+  position: relative;
+  display: block;
+}
+
+.linear-block__experience-anchor {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+
+@media only screen and (min-width: 1024px) {
+  .linear-block--experience-step.linear-block--left
+    .linear-block__experience-anchor {
+    margin-left: auto;
+  }
+
+  .linear-block--experience-step.linear-block--right
+    .linear-block__experience-anchor {
+    margin-right: auto;
+  }
+}
+
+.linear-block__step-index {
+  position: absolute;
+  top: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+}
+
+/* Left column: number sits past the right edge of the card (toward center) */
+.linear-block--experience-step.linear-block--left .linear-block__step-index {
+  left: 100%;
+  margin-left: clamp(10.5rem, 13vw, 15rem);
+}
+
+/* Right column: number sits past the left edge of the card */
+.linear-block--experience-step.linear-block--right .linear-block__step-index {
+  right: 100%;
+  margin-right: clamp(2rem, 3vw, 2.5rem);
+}
+
+@keyframes linear-block-step-ring-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.85) inset,
+      0 10px 26px rgba(241, 85, 51, 0.16);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.9) inset,
+      0 14px 34px rgba(241, 85, 51, 0.24);
+    transform: scale(1.06);
+  }
+}
+
+.linear-block__step-ring {
+  position: absolute;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  border: 2px solid rgba(241, 85, 51, 0.5);
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(255, 236, 220, 0.75)
+  );
+  animation: linear-block-step-ring-pulse 4.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linear-block__step-ring {
+    animation: none;
+  }
+}
+
+.linear-block__step-digit {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1.3rem, 2.6vw, 1.8rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #f15533;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 22px rgba(241, 85, 51, 0.32);
+}
+
+.linear-block__step-line {
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  width: clamp(0.75rem, 3.5vw, 2.25rem);
+  transform: translateY(-50%);
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* Connector toward card: left rows → marker on outer right, line aims left */
+.linear-block--experience-step.linear-block--left
+  .linear-block__step-index
+  .linear-block__step-line {
+  right: calc(100% - 2px);
+  background: linear-gradient(
+    270deg,
+    rgba(241, 85, 51, 0.25),
+    rgba(241, 85, 51, 0.72)
+  );
+}
+
+/* Right rows → marker on outer left, line aims right */
+.linear-block--experience-step.linear-block--right
+  .linear-block__step-index
+  .linear-block__step-line {
+  left: calc(100% - 2px);
+  background: linear-gradient(
+    90deg,
+    rgba(241, 85, 51, 0.25),
+    rgba(241, 85, 51, 0.72)
+  );
 }
 
 .linear-content--creative .linear-block--left .linear-block__tags {

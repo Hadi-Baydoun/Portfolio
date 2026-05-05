@@ -6,9 +6,7 @@ import Footer from "@/layout/Footer";
 import Navbar from "@/layout/Navbar";
 
 import Homepage from "@/pages/Homepage";
-import Explore from "@/pages/Explore";
 
-import Contact from "@/pages/Contact";
 
 function ScrollToHash() {
 	const { pathname, hash } = useLocation();
@@ -66,8 +64,6 @@ const App = () => {
 
 				<Routes>
 					<Route path="/" element={<Homepage />} />
-					<Route path="/explore" element={<Explore />} />
-					<Route path="/contact" element={<Contact />} />
 				</Routes>
 
 				<Footer />

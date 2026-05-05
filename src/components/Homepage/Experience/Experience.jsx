@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from "react";
+import { Fragment, useRef } from "react";
 import { motion } from "framer-motion";
 
 import {
@@ -8,23 +8,19 @@ import {
   TREE_BLUR_DECOR_FINAL,
 } from "./experienceLayersData";
 import { MAIN_IMG } from "./mainAssets";
-import processStepConnectorSrc from "@/assets/Homepage/work_1.webm";
-import rightArrowImg from "@/assets/right_arrow.png";
 import { LazySwapImage } from "../hero/LazySwapImage";
 import { LinearProcessRow } from "./LinearProcessRow";
 import { TreeBlurDecor } from "./TreeBlurDecor";
-import { CV_DOWNLOAD_HREF } from "@/constants/cvPublic";
+import { useTypewriter } from "@/components/motion-primitives/useTypewriter";
+
+const EXPERIENCE_TITLE_TYPEWRITER_TEXT = "Experience";
 
 const processSteps = [
   {
     sectionClass: "mobilearts",
-    animationOnLeft: false,
     eyebrow: "November 2025 - Present",
-    title: (
-      <>
-        Front-End Developer at <span className="highlight">Mobile Arts</span>
-      </>
-    ),
+    titlePrefix: "Front-End Developer at ",
+    titleHighlight: "Mobile Arts",
     body: (
       <>
         Building scalable, high-performance ReactJS websites with smooth
@@ -36,13 +32,9 @@ const processSteps = [
   },
   {
     sectionClass: "holdoco",
-    animationOnLeft: true,
     eyebrow: "June 2025 - November 2025",
-    title: (
-      <>
-        ERP Full-Stack Developer at <span className="highlight">HoldCo Corp.</span>
-      </>
-    ),
+    titlePrefix: "ERP Full-Stack Developer at ",
+    titleHighlight: "HoldCo Corp.",
     body: (
       <>
         Customized ERPNext modules using Python and Frappe while building
@@ -54,13 +46,9 @@ const processSteps = [
   },
   {
     sectionClass: "training",
-    animationOnLeft: false,
     eyebrow: "April 2024 - August 2024",
-    title: (
-      <>
-        Software Developer Training at <span className="highlight">On-Ramp Academy</span>
-      </>
-    ),
+    titlePrefix: "Software Developer Training at ",
+    titleHighlight: "On-Ramp Academy",
     body: (
       <>
         Completed advanced training in ReactJS, APIs, databases, cybersecurity, cloud computing, and modern software architecture. Improved skills in building secure web applications, writing better APIs, using Git & GitHub, testing software, and working in Agile teams.{" "}
@@ -69,36 +57,20 @@ const processSteps = [
   },
 ];
 
-/** Last-row PNG arrow: align with `homepage.css` process-step desktop breakpoint. */
-const PROCESS_END_ARROW_MIN_WIDTH_PX = 1024;
-
-function useProcessEndArrowVisible() {
-  const [visible, setVisible] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return window.matchMedia(
-      `(min-width: ${PROCESS_END_ARROW_MIN_WIDTH_PX}px)`,
-    ).matches;
-  });
-
-  useEffect(() => {
-    const mq = window.matchMedia(
-      `(min-width: ${PROCESS_END_ARROW_MIN_WIDTH_PX}px)`,
-    );
-    const sync = () => setVisible(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  return visible;
-}
-
 export function Experience() {
-  const showProcessEndArrow = useProcessEndArrowVisible();
+  const experienceTitleTriggerRef = useRef(null);
+  const { typedText, showCursor } = useTypewriter(
+    EXPERIENCE_TITLE_TYPEWRITER_TEXT,
+    {
+      triggerRef: experienceTitleTriggerRef,
+      charDelay: 100,
+      threshold: 0.35,
+    },
+  );
 
   return (
     <>
-      <section className="section">
+      <section id="experience" className="section">
         <motion.div
           className="hero-visual hero-visual--creative"
           initial={{ opacity: 0, y: 48 }}
@@ -138,11 +110,18 @@ export function Experience() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
           >
-            <div className="title-container">
-              <h3 className="xlg">
+            <div className="title-container" ref={experienceTitleTriggerRef}>
+              <h3 className="xlg text-[#1a2e22]">
                 Work
                 <br />
-                <span className="highlight">Experience</span>
+                <span className="highlight" aria-label={EXPERIENCE_TITLE_TYPEWRITER_TEXT}>
+                  {typedText}
+                  {showCursor ? (
+                    <span className="ml-0.5 inline-block font-light opacity-80" aria-hidden>
+                      |
+                    </span>
+                  ) : null}
+                </span>
               </h3>
             </div>
             <div
@@ -163,24 +142,16 @@ export function Experience() {
         {processSteps.map((step, index) => (
           <Fragment key={step.sectionClass}>
             <LinearProcessRow
-              showArrowToNext={index < processSteps.length - 1}
-              endArrowSrc={
-                index === processSteps.length - 1 && showProcessEndArrow
-                  ? rightArrowImg
-                  : undefined
-              }
-              cvDownloadHref={
-                index === processSteps.length - 1
-                  ? CV_DOWNLOAD_HREF
-                  : undefined
-              }
-              connectorSrc={processStepConnectorSrc}
               {...step}
+              animationOnLeft={index % 2 === 1}
+              stepIndex={index + 1}
             />
-            {index === 1 && (
+            {step.sectionClass === "holdoco" && (
               <TreeBlurDecor blocks={TREE_BLUR_DECOR_AFTER_DESIGN} />
             )}
-            {index === 2 && <TreeBlurDecor blocks={TREE_BLUR_DECOR_FINAL} />}
+            {step.sectionClass === "training" && (
+              <TreeBlurDecor blocks={TREE_BLUR_DECOR_FINAL} />
+            )}
           </Fragment>
         ))}
       </div>

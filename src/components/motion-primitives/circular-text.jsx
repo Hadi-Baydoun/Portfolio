@@ -63,7 +63,7 @@ const CircularText = memo(function CircularText({
 
   return (
     <motion.div
-      className={`m-0 mx-auto rounded-full relative text-white font-black text-center origin-center shrink-0 ${interactive ? "cursor-pointer" : "cursor-default"} ${className}`}
+      className={`m-0 mx-auto rounded-full relative text-white font-black text-center origin-center shrink-0 ${interactive ? "cursor-pointer" : "pointer-events-none cursor-default"} ${className}`}
       style={{ width: resolvedDiameter, height: resolvedDiameter }}
       initial={{ rotate: 0, scale: 1 }}
       animate={{ rotate: 360, scale }}

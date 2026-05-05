@@ -1,6 +1,11 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
-
+import {
+  animate,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "framer-motion";
+import icon_wrapper from "@/assets/icon_wrapper.svg";
 import TextEffect from "@/components/motion-primitives/text-effect";
 import CircularText from "@/components/motion-primitives/circular-text";
 import RotatingText from "@/components/motion-primitives/rotating-text";
@@ -14,6 +19,32 @@ const creativeSignals = [
   "Performance",
   "Responsive",
 ];
+
+const stats = [
+  {
+    value: "35",
+    suffix: "+",
+    label: "Projects Delivered",
+    description:
+      "I successfully completed over 35 projects — continuously improving and growing.",
+  },
+  {
+    value: "40",
+    suffix: "%",
+    label: "Performance Improvement",
+    description:
+      "Up to 40%+ faster load times through performance optimization.",
+  },
+  {
+    value: "2",
+    suffix: "+",
+    label: "Years Experience",
+    description:
+      "More than 2 Years of Hands-On Experience in Front-end development.",
+  },
+];
+
+
 const creativeSignalsCircularText = `${creativeSignals.join(" · ")} · `;
 
 const HERO_HEADLINE_L1_PRE = "Building ";
@@ -32,6 +63,27 @@ const HERO_HEADLINE_MOTION_VARIANTS = {
   stagger: 0.025,
   transition: { duration: 0.75 },
   initial: { y: 20, rotateX: 0, scale: 0.98 },
+};
+
+/** Framer tweens interpolate these more evenly than chained CSS transitions. */
+const HERO_STAT_CARD_VARIANTS = {
+  rest: {
+    y: 0,
+    borderColor: "rgba(212, 212, 212, 1)",
+    backgroundColor: "rgba(255, 255, 255, 0.92)",
+    boxShadow: "0 2px 12px rgba(0, 0, 0, 0.045)",
+  },
+  hover: {
+    y: -5,
+    borderColor: "rgba(241, 85, 51, 0.42)",
+    backgroundColor: "rgba(255, 247, 240, 1)",
+    boxShadow: "0 20px 52px rgba(255, 100, 100, 0.14)",
+  },
+};
+
+const HERO_STAT_CARD_TRANSITION = {
+  duration: 0.7,
+  ease: [0.16, 1, 0.3, 1],
 };
 
 /** Ring diameter is a fraction of the intro stack width. */
@@ -169,6 +221,93 @@ function HeroCreativeHead() {
   );
 }
 
+/** Counts `value` when this block enters the viewport (once per page load). */
+function HeroStatCounter({ value, suffix, staggerDelay }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.35 });
+  const target = Number.parseFloat(String(value));
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    if (!inView || Number.isNaN(target)) return undefined;
+
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setDisplay(Math.round(target));
+      return undefined;
+    }
+
+    setDisplay(0);
+    const controls = animate(0, target, {
+      duration: 1.65,
+      delay: staggerDelay,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: (latest) => setDisplay(Math.round(latest)),
+    });
+    return () => controls.stop();
+  }, [inView, staggerDelay, target]);
+
+  return (
+    <div
+      ref={ref}
+      className="text-6xl leading-none tracking-tight text-[#000000] font-inter"
+    >
+      {display}
+      <span className="text-[#F15533]">{suffix}</span>
+    </div>
+  );
+}
+
+function HeroStatCard({ children }) {
+  const reduceMotion = useReducedMotion();
+  return (
+    <motion.div
+      className="rounded-3xl border-2 border-dashed p-5 transform-gpu"
+      initial="rest"
+      animate="rest"
+      whileHover={reduceMotion ? undefined : "hover"}
+      variants={HERO_STAT_CARD_VARIANTS}
+      transition={HERO_STAT_CARD_TRANSITION}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function HeroStats() {
+  return (
+    <div id="projects" className="relative z-2">
+      {/* Above intro-orbit (negative top pulls the ring over this row — z-index restores hover targets). */}
+      <div className="container">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto mt-12">
+          {stats.map((stat, index) => (
+            <div key={stat.label} className="flex flex-col text-start gap-3">
+              <HeroStatCard>
+                <HeroStatCounter
+                  value={stat.value}
+                  suffix={stat.suffix}
+                  staggerDelay={index * 0.08}
+                />
+                <div
+                  className="text-md text-[#000000] mt-1.5 font-inter"
+                  style={{ fontWeight: "600" }}
+                >
+                  {stat.label}
+                </div>
+              </HeroStatCard>
+              <div className="text-sm text-[#000000] font-medium leading-relaxed px-2 font-inter">
+                {stat.description}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HeroCreativeRing() {
   const stackRef = useRef(null);
   const [ringDiameter, setRingDiameter] = useState(INTRO_RING_MIN_PX);
@@ -195,7 +334,7 @@ function HeroCreativeRing() {
   if (!showCircularRing) return null;
 
   return (
-    <div className="section margin-top--large">
+    <div className="section margin-top--large relative z-0">
       <div ref={stackRef} className="hero-creative__intro-stack">
         <motion.div
           className="hero-creative__intro-orbit"
@@ -221,9 +360,17 @@ function HeroCreativeRing() {
 export function About() {
   return (
     <div className="container">
-      <section className="section margin-top--large hero-creative">
+      <section id="about" className="section margin-top--large hero-creative">
+        {/* <div className="bg-[#F3F5F8] rounded-full py-1 flex items-center gap-3 w-fit justify-center mx-auto pr-4 pl-1 mb-8">
+          <img src={icon_wrapper} alt="icon_wrapper" className="w-8 h-8" />
+          <span className="text-[#0F0F0F] font-inter font-medium text-sm whitespace-nowrap">
+            About Me
+          </span>
+        </div> */}
         <HeroCreativeHead />
       </section>
+
+      <HeroStats />
 
       <HeroCreativeRing />
     </div>

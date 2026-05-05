@@ -1,9 +1,12 @@
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { FileDown, Mail } from "lucide-react";
 import githubIcon from "@/assets/github.svg";
 import linkedinIcon from "@/assets/linkedin.svg";
 import { CV_DOWNLOAD_HREF } from "@/constants/cvPublic";
+import { useTypewriter } from "@/components/motion-primitives/useTypewriter";
+
+const CONNECT_TYPEWRITER_TEXT = "connect";
 
 const CONTACT_CARD_SPRING = { stiffness: 42, damping: 32, mass: 0.85 };
 
@@ -66,7 +69,7 @@ const ContactCard = memo(function ContactCard({ icon, title, href }) {
             {/* Floating Icon */}
             <div
                 style={FLOAT_ICON_STYLE}
-                className="mb-4 rounded-full bg-[#1c2e57] p-5 text-white shadow-2xl transition-transform duration-300"
+                className="mb-4 rounded-full bg-[#1a2e22] p-5 text-white shadow-2xl transition-transform duration-300"
             >
                 {Icon ? (
                     <Icon size={32} strokeWidth={1.5} />
@@ -78,7 +81,7 @@ const ContactCard = memo(function ContactCard({ icon, title, href }) {
             {/* Floating Text */}
             <h3
                 style={FLOAT_TITLE_STYLE}
-                className="text-xl font-bold tracking-tight text-[#1c2e57]"
+                className="text-xl font-bold tracking-tight text-[#1a2e22]"
             >
                 {title}
             </h3>
@@ -86,22 +89,40 @@ const ContactCard = memo(function ContactCard({ icon, title, href }) {
             {/* Bottom "Reflection" Flare */}
             <div
                 style={FLOAT_FLARE_STYLE}
-                className="mt-2 h-1 w-8 rounded-full bg-[#ff6563] opacity-0 transition-all group-hover:w-12 group-hover:opacity-100"
+                className="mt-2 h-1 w-8 rounded-full bg-[#F15533] opacity-0 transition-all group-hover:w-12 group-hover:opacity-100"
             />
         </motion.a>
     );
 });
 
 export default function ContactGrid() {
+    const headlineTriggerRef = useRef(null);
+    const { typedText, showCursor } = useTypewriter(CONNECT_TYPEWRITER_TEXT, {
+        triggerRef: headlineTriggerRef,
+        charDelay: 100,
+        threshold: 0.35,
+    });
+
     return (
-        <section className="relative z-10 bg-white px-6 py-20 my-10">
-            <div className="mx-auto mb-16 max-w-6xl text-center">
+        <section id="contact" className="relative z-10 bg-transparent px-6 pt-20 mt-10">
+            <div
+                ref={headlineTriggerRef}
+                className="mx-auto mb-16 max-w-6xl text-center"
+            >
                 <motion.h2
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    className="font-bushcraft text-4xl uppercase tracking-tight text-[#1c2e57] md:text-6xl"
+                    className="font-bushcraft text-4xl uppercase tracking-tight text-[#1a2e22] md:text-6xl"
                 >
-                    Let&apos;s <span className="text-[#ff6563]">connect</span>
+                    Let&apos;s{" "}
+                    <span className="text-[#F15533]" aria-label={CONNECT_TYPEWRITER_TEXT}>
+                        {typedText}
+                        {showCursor ? (
+                            <span className="ml-0.5 inline-block font-light opacity-80" aria-hidden>
+                                |
+                            </span>
+                        ) : null}
+                    </span>
                 </motion.h2>
             </div>
 
@@ -126,10 +147,10 @@ export default function ContactGrid() {
                         color: "#1c2e57",
                         fontSize: "clamp(1.1rem, 2.8vw, 1.35rem)",
                     }}
-                    className="inline-flex min-h-16 w-full max-w-xl items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-slate-50/90 to-slate-100/80 px-10 py-5 text-center !font-bold uppercase tracking-[0.08em] shadow-md shadow-slate-900/8 ring-1 ring-slate-900/5 transition-transform duration-200 hover:scale-[1.04] active:scale-[1.02] focus-visible:ring-2 focus-visible:ring-[#ff6563] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:w-auto"
+                    className="inline-flex min-h-16 w-full max-w-xl items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-slate-50/90 to-slate-100/80 px-10 py-5 text-center !font-bold uppercase tracking-[0.08em] shadow-md shadow-slate-900/8 ring-1 ring-slate-900/5 transition-transform duration-200 hover:scale-[1.04] active:scale-[1.02] focus-visible:ring-2 focus-visible:ring-[#F15533] focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:w-auto"
                 >
                     <FileDown
-                        className="h-7 w-7 shrink-0 text-[#ff6563]"
+                        className="h-7 w-7 shrink-0 text-[#F15533]"
                         strokeWidth={2}
                         aria-hidden
                     />
