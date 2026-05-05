@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
 /* Hero homepage: classes below pair with `Hero.jsx` + `useHomepageInit` → `scripts/homepage.js` */
 @import "./styles/homepage.css";
@@ -220,7 +221,14 @@
 }
 
 body {
-  font-family: Lato, sans-serif;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
 }
 
 body,
@@ -242,6 +250,10 @@ h5,
 h6 {
   font-family: Bushcraft, sans-serif;
   line-height: 110%;
+}
+
+.font-inter {
+  font-family: Inter, sans-serif;
 }
 
 h1,
@@ -274,7 +286,7 @@ h4 {
 
 p {
   color: #41455a;
-  font-family: Lato, sans-serif;
+  font-family: inherit;
   font-weight: 400;
   font-size: 1.375em;
   line-height: 160%;
@@ -288,7 +300,7 @@ p {
 
 a {
   color: #fff;
-  font-family: Lato, sans-serif;
+  font-family: inherit;
   font-weight: 900;
   font-size: 1.375em;
   line-height: normal;
@@ -891,7 +903,7 @@ label {
 input,
 label,
 textarea {
-  font-family: Lato, sans-serif;
+  font-family: inherit;
 }
 
 input,

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import { LazySwapImage } from "./LazySwapImage";
 import {
   CLOUD_LAYERS,
@@ -7,8 +7,6 @@ import {
   SMALL_BIRD_SLOTS,
 } from "./heroLayersData";
 import { HEADER_IMG } from "./headerAssets";
-
-const TITLE_ROTATE_INTERVAL_MS = 4000;
 
 const TREE_ALT_MSG = "a close up tree of the forest";
 
@@ -163,24 +161,6 @@ const HangingText = memo(function HangingText({ children }) {
 function HeroHeader() {
   const bgUrl = HEADER_IMG.homeHeaderBg;
   const titleRef = useRef(null);
-  const [titlePhase, setTitlePhase] = useState(() =>
-    typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ? 1
-      : 0
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) {
-      setTitlePhase(1);
-      return undefined;
-    }
-    const id = window.setInterval(() => {
-      setTitlePhase((p) => (p === 0 ? 1 : 0));
-    }, TITLE_ROTATE_INTERVAL_MS);
-    return () => window.clearInterval(id);
-  }, []);
 
   useHangingChars(titleRef);
 
@@ -223,31 +203,9 @@ function HeroHeader() {
             className="animation--fade-in title--upper"
             aria-live="polite"
           >
-            <span className="hero-title-visually-hidden">
-              {titlePhase === 0 ? "Hadi Baydoun" : "Front-end Developer"}
-            </span>
-            <div className="hero-title-cycle" aria-hidden="true">
-              <div
-                className={`hero-title-cycle__panel hero-title-cycle__panel--name ${titlePhase === 0
-                  ? "hero-title-cycle__panel--active"
-                  : "hero-title-cycle__panel--inactive"
-                  }`}
-              >
-                <HangingText>Hadi Baydoun</HangingText>
-              </div>
-              <div
-                className={`hero-title-cycle__panel ${titlePhase === 1
-                  ? "hero-title-cycle__panel--active"
-                  : "hero-title-cycle__panel--inactive"
-                  }`}
-              >
-                <HangingText>Front-end</HangingText>
-                <br />
-                <span>
-                  <HangingText>Developer</HangingText>
-                </span>
-              </div>
-            </div>
+            <HangingText>Front-end</HangingText>
+            <br />
+            <HangingText>Developer</HangingText>
           </h1>
         </div>
 

@@ -114,6 +114,7 @@
   align-items: center;
   align-content: center;
   flex-wrap: wrap;
+  z-index: 0;
 }
 
 .header.home-header .header-background .titles .title--upper {
@@ -141,9 +142,9 @@
 
 @media only screen and (min-width: 1248px) {
   .header.home-header .header-background .titles .title--upper {
-    font-size: 6em;
+    font-size: 9em;
     display: block;
-    margin-top: -25px;
+    margin-top: -110px;
   }
 }
 
@@ -944,10 +945,7 @@
   text-align: right;
 }
 
-.hero-visual
-  .images--left
-  .image-animation-container
-  .hero-logo-lottie {
+.hero-visual .images--left .image-animation-container .hero-logo-lottie {
   width: 30% !important;
   display: inline-block;
   left: 3%;
@@ -1062,41 +1060,31 @@
 
 .hero-creative__copy h2 {
   line-height: 1.18;
+  color: #000;
+  font-size: clamp(1.35em, 4.2vw, 2.5em);
+  font-weight: 600;
 }
 
 .hero-headline__line {
   display: block;
 }
 
-.hero-headline__line--intro {
-  white-space: nowrap;
-}
-
 .hero-headline__rotating-pill {
   display: inline-flex;
   align-items: baseline;
-  padding: 0.5rem;
   width: fit-content;
-  border-radius: 0.22em;
-  color: #fff;
-  background-color: #ff6563;
   vertical-align: baseline;
 }
 
 @media only screen and (max-width: 640px) {
   .hero-creative__copy h2 {
-    font-size: clamp(1.65em, 7.7vw, 2.5em);
-  }
-
-  .hero-headline__rotating-pill {
-    padding: 0.12em 0.22em 0.18em;
+    font-size: clamp(1.28em, 6.8vw, 2.05em);
   }
 }
 
 @media only screen and (min-width: 1280px) {
-  .hero-headline__rotating-pill {
-    width: 175px !important;
-    padding: 0rem 0rem 0.5rem 1.2rem;
+  .hero-creative__copy h2 {
+    font-size: clamp(2.25rem, 3vw, 3rem);
   }
 }
 

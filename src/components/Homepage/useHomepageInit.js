@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { initHomepage } from "../../../../scripts/script.js";
+import { initHomepage } from "../../../scripts/script.js";
 
 /** Runs legacy homepage behaviors (Rellax, lazy load, Lottie, nav) after mount; cleans up on unmount. */
 export function useHomepageInit() {

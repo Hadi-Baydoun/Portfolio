@@ -3,6 +3,7 @@ import React, {
     useRef,
     useImperativeHandle,
     forwardRef,
+    useCallback,
 } from "react";
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
 
@@ -19,47 +20,63 @@ const ConnectedItem = ({
     animateTarget,
     entranceTransition,
     revealDelay,
-    type
+    type,
+    itemRef,
+    segmentClassName,
 }) => {
-    const itemRef = useRef(null);
-
     const distance = useMotionValue(0);
 
+    // Batch mouse tracking into a single effect
     React.useEffect(() => {
-        const unsubscribe = mouseX.on("change", (x) => {
-            const y = mouseY.get();
-            if (x === -1000 || y === -1000) {
-                distance.set(0);
-                return;
-            }
+        let animationId = null;
 
-            const el = itemRef.current;
-            if (!el) return;
+        const unsubscribe = mouseX.on("change", () => {
+            // Cancel pending animation frame and schedule new one
+            if (animationId) cancelAnimationFrame(animationId);
 
-            const rect = el.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
+            animationId = requestAnimationFrame(() => {
+                const x = mouseX.get();
+                const y = mouseY.get();
 
-            const lineHeight = rect.height * 2.5; // tolerance band per line
-            const dy = Math.abs(y - cy);
+                // Quick exit if mouse is off-screen
+                if (x === -1000 || y === -1000) {
+                    distance.set(0);
+                    return;
+                }
 
-            if (dy > lineHeight) {
-                distance.set(0);
-                return;
-            }
+                const el = itemRef.current;
+                if (!el) return;
 
-            const dx = x - cx;
-            const d = Math.hypot(dx, dy);
+                const rect = el.getBoundingClientRect();
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top + rect.height / 2;
 
-            const t = Math.max(0, 1 - d / proximityRadius);
+                const lineHeight = rect.height * 2.5;
+                const dy = Math.abs(y - cy);
 
-            distance.set(t * t * (3 - 2 * t));
+                // Early exit if outside vertical band
+                if (dy > lineHeight) {
+                    distance.set(0);
+                    return;
+                }
+
+                const dx = x - cx;
+                const d = Math.hypot(dx, dy);
+                const t = Math.max(0, 1 - d / proximityRadius);
+
+                // Smooth easing: smoothstep function
+                distance.set(t * t * (3 - 2 * t));
+            });
         });
 
-        return () => unsubscribe();
+        return () => {
+            if (animationId) cancelAnimationFrame(animationId);
+            unsubscribe();
+        };
     }, [mouseX, mouseY, distance, proximityRadius]);
 
-    const springConfig = { stiffness: 120, damping: 22, mass: 0.6 };
+    // Tighter spring config for snappier response
+    const springConfig = { stiffness: 180, damping: 26, mass: 0.5 };
 
     const scale = useSpring(
         useTransform(distance, (v) => 1 + v * proximityMaxScale),
@@ -74,6 +91,7 @@ const ConnectedItem = ({
     return (
         <motion.span
             ref={itemRef}
+            className={segmentClassName}
             initial={initialItem}
             animate={animateTarget}
             style={{
@@ -84,6 +102,8 @@ const ConnectedItem = ({
                 position: "relative",
                 zIndex: 1,
                 willChange: "transform",
+                backfaceVisibility: "hidden",
+                WebkitFontSmoothing: "subpixel-antialiased",
             }}
             transition={{
                 ...entranceTransition,
@@ -102,23 +122,26 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
         type = "chars",
         motionVariants = {},
         inView = false,
-        inViewMargin = "-50px", // Trigger slightly before it enters center view
+        inViewMargin = "-50px",
         inViewOnce = true,
         delay = 0,
         proximityHover = false,
         proximityRadius = 85,
-        proximityMaxScale = 0.3, // Slightly more pronounced scale
+        proximityMaxScale = 0.3,
         proximityMaxY = -12,
         style: wrapStyle,
+        segmentClassName,
         ...rest
     } = props;
 
     const localRef = useRef(null);
     const mouseX = useMotionValue(-1000);
     const mouseY = useMotionValue(-1000);
+    const itemRefs = useRef(new Map());
 
     useImperativeHandle(ref, () => localRef.current);
 
+    // Optimized line runs calculation
     const lineRuns = useMemo(() => {
         if (children != null) {
             return [{
@@ -128,6 +151,7 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
             }];
         }
         if (typeof text !== "string") return [];
+
         const normalized = text
             .replace(/\r\n/g, "\n")
             .replace(/\\n/g, "\n");
@@ -153,48 +177,59 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
     const inViewResult = useInView(localRef, { once: inViewOnce, margin: inViewMargin });
     const isInView = !inView || inViewResult;
 
-    // --- FANCY ENTRANCE CONFIG ---
-    const stagger = motionVariants.stagger ?? (type === "chars" ? 0.04 : 0.12);
+    // Memoized entrance animation config
+    const stagger = useMemo(() =>
+        motionVariants.stagger ?? (type === "chars" ? 0.03 : 0.1),
+        [motionVariants.stagger, type]
+    );
 
-    const initialItem = {
+    const initialItem = useMemo(() => ({
         opacity: 0,
         y: 40,
         rotateX: 45,
         scale: 0.9,
         ...motionVariants.initial
-    };
+    }), [motionVariants.initial]);
 
-    const animateTarget = isInView ? {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        scale: 1,
-        ...motionVariants.animate
-    } : initialItem;
+    const animateTarget = useMemo(() =>
+        isInView ? {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            scale: 1,
+            ...motionVariants.animate
+        } : initialItem,
+        [isInView, motionVariants.animate, initialItem]
+    );
 
-    // The secret sauce: A custom ease-out cubic bezier for that "premium" glide
-    const entranceTransition = {
-        duration: 1.2,
+    // Premium entrance easing
+    const entranceTransition = useMemo(() => ({
+        duration: 0.8,
         ease: [0.215, 0.61, 0.355, 1],
         ...motionVariants.transition
-    };
+    }), [motionVariants.transition]);
+
+    // Debounced mouse move handler
+    const handleMouseMove = useCallback((e) => {
+        if (proximityHover) {
+            mouseX.set(e.clientX);
+            mouseY.set(e.clientY);
+        }
+    }, [proximityHover, mouseX, mouseY]);
+
+    const handleMouseLeave = useCallback(() => {
+        mouseX.set(-1000);
+        mouseY.set(-1000);
+    }, [mouseX, mouseY]);
 
     return (
         <motion.span
             ref={localRef}
-            onMouseMove={(e) => {
-                if (proximityHover) {
-                    mouseX.set(e.clientX);
-                    mouseY.set(e.clientY);
-                }
-            }}
-            onMouseLeave={() => {
-                mouseX.set(-1000);
-                mouseY.set(-1000);
-            }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
             style={{
                 display: "inline-block",
-                perspective: "1000px", // Needed for the rotateX effect
+                perspective: "1000px",
                 willChange: "transform, opacity",
                 ...wrapStyle,
             }}
@@ -207,9 +242,11 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
                 >
                     {fragments.map((item, i) => {
                         const index = startIndex + i;
+                        const itemKey = `${lineIndex}-${i}`;
+
                         return (
                             <ConnectedItem
-                                key={`${lineIndex}-${i}`}
+                                key={itemKey}
                                 item={item}
                                 mouseX={mouseX}
                                 mouseY={mouseY}
@@ -221,6 +258,8 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
                                 animateTarget={animateTarget}
                                 entranceTransition={entranceTransition}
                                 revealDelay={(delay / 1000) + (index * stagger)}
+                                itemRef={() => itemRefs.current.get(itemKey) ?? {}}
+                                segmentClassName={segmentClassName}
                             />
                         );
                     })}
@@ -229,5 +268,7 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
         </motion.span>
     );
 });
+
+SplittingText.displayName = "SplittingText";
 
 export default SplittingText;
