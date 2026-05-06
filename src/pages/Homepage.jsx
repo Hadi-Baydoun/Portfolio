@@ -6,7 +6,7 @@ import Skills from "@/components/Homepage/Skills/Skills";
 import ContactGrid from "@/components/Homepage/Contact/ContactGrid";
 import Projects from "@/components/Homepage/Projects/Projects";
 
-/** Pairs with `styles/homepage.css` (imported in `index.css`) and `scripts/homepage.js` via `useHomepageInit`. */
+
 const Homepage = () => {
   useHomepageInit();
   return (
@@ -16,7 +16,7 @@ const Homepage = () => {
         <main className="main">
           <About />
           <Experience />
-          {/* <Projects /> */}
+          <Projects />
           <Skills />
           <ContactGrid />
         </main>

@@ -1,10 +1,16 @@
 # Hadi Baydoun Portfolio
 
-React + Vite portfolio with three routes: home, explore (skills), and contact.
+React + Vite portfolio (single-page) with hash-anchor navigation (smooth scroll).
 
 ## Prerequisites
 
 Node.js (LTS) and npm.
+
+## Setup
+
+```bash
+npm install
+```
 
 ## Scripts
 
@@ -26,13 +32,11 @@ React 19, Vite 8, React Router, Tailwind CSS 4, Framer Motion, Lucide, vanilla-l
 
 `@` maps to `src/` in `vite.config.js` (e.g. `@/components/...`).
 
-## Routes
+## Routing & navigation
 
-| Path | Page |
-| ---- | ---- |
-| `/` | Homepage (`Hero`, parallax, Lottie) |
-| `/explore` | Skills |
-| `/contact` | Contact |
+- **Routes**: the app currently renders only `/` (see `src/App.jsx`).
+- **Navigation**: sections on the homepage use IDs and the app scrolls to `/#<id>` with smooth scrolling (see `ScrollToHash` in `src/App.jsx`).
+- **Contact styling**: `src/App.jsx` toggles a `page-contact` body class when the path is `/contact` (even though no `/contact` route is defined yet).
 
 Shared: `layout/Navbar.jsx`, `layout/Footer.jsx`. Entry: `src/main.jsx` → `src/index.css`.
 
@@ -50,7 +54,7 @@ Under `src/assets/`: `Homepage/`, `Explore/`, `Contact/`, `Skills/` (icons — *
 Served at the site root (not bundled as modules).
 
 - `favicon.png` — linked in `index.html`
-- **CV** — Put your PDF in `public/`. Edit `src/constants/cvPublic.js` and set `CV_PUBLIC_FILE` to that filename (exact match, including spaces). Download links use that value.
+- **CV** — Put your PDF in `public/`. Edit `src/constants/cvPublic.js` and set `CV_PUBLIC_FILE` to the exact filename. Download links use `CV_DOWNLOAD_HREF`.
 - `public/json/*.json` — Lottie data for the homepage script
 
 ## Build & deploy

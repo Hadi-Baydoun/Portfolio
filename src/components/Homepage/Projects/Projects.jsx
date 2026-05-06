@@ -1,11 +1,13 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import {
     motion,
-    useReducedMotion,
     useScroll,
     useTransform,
 } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import { useTypewriter } from "@/components/motion-primitives/useTypewriter";
 import mobile_arts from "@/assets/Projects/mobile_arts.webp";
 import adstalk from "@/assets/Projects/adstalk_pic.webp";
@@ -13,160 +15,159 @@ import mystic from "@/assets/Projects/mystic.webp";
 import rbs from "@/assets/Projects/rbs.webp";
 import tecleef from "@/assets/Projects/tecleef.webp";
 
-
-
 const PROJECTS = [
     {
         title: "Mobile Arts",
         image: mobile_arts,
         imageAlt: "Mobile Arts Website",
-        skills: ["ReactJS", "Framer Motion", "Tailwind CSS"],
+        skills: ["ReactJS", "Framer Motion", "Tailwind", "ThreeJS"],
         websiteUrl: "https://mobileartsme.com/",
         company: "Mobile Arts",
     },
     {
         title: "Adstalk",
-
         image: adstalk,
         imageAlt: "Adstalk Website",
-        skills: ["ReactJS", "Framer Motion", "Tailwind CSS"],
+        skills: ["ReactJS", "Tailwind", "Framer Motion"],
         websiteUrl: "https://www.adstalk.ai/",
         company: "Mobile Arts",
-
     },
     {
         title: "Mystic Mist",
-
         image: mystic,
         imageAlt: "Mystic Mist Website",
-        skills: ["ReactJS", "Tailwind CSS", "Strapi CMS"],
+        skills: ["ReactJS", "Strapi CMS", "Framer Motion"],
         websiteUrl: "https://mystic-mist.vercel.app/",
         company: "Freelance",
-
     },
     {
         title: "Tecleef",
-
         image: tecleef,
         imageAlt: "Tecleef Website",
-        skills: ["ReactJS", "Python", "Frappe", "ERPNext", "Tailwind CSS"],
+        skills: ["ReactJS", "Python", "ERPNext"],
         websiteUrl: "https://tecleef.com/",
         company: "HoldCo Corp.",
-
     },
     {
         title: "RBS",
         image: rbs,
         imageAlt: "RBS Website",
-        skills: ["ReactJS", "Python", "Frappe", "ERPNext", "Tailwind CSS"],
+        skills: ["Python", "React", "Tailwind", "ERPNext"],
         websiteUrl: "https://rbsme.com/",
         company: "HoldCo Corp.",
-
     },
 ];
 
-const PROJECTS_TITLE_TYPEWRITER_TEXT = "projects";
-
-const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.12,
-            delayChildren: 0.08,
-        },
-    },
-};
-
 const fadeUpVariants = {
-    hidden: { opacity: 0, y: 28, scale: 0.98 },
+    hidden: { opacity: 0, y: 40 },
     show: {
         opacity: 1,
         y: 0,
-        scale: 1,
-        transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+        transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
     },
 };
 
+function ProjectCard({ project }) {
+    const cardRef = useRef(null);
+    const [isHovered, setIsHovered] = useState(false);
 
 
-function ProjectCardMedia({ image, imageAlt, wideLayout }) {
+
+    // Parallax effect for the image inside the card
+    const { scrollYProgress } = useScroll({
+        target: cardRef,
+        offset: ["start end", "end start"],
+    });
+    const yImage = useTransform(scrollYProgress, [0, 1], [-20, 20]);
+
     return (
-        <div
-            className={`relative isolate overflow-hidden rounded-2xl bg-[#e8ede9] ring-1 ring-[#dfe8e2]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] ${wideLayout ? "aspect-16/11 min-h-[220px] lg:aspect-auto lg:min-h-[min(100%,320px)] lg:flex-1" : "aspect-16/11 min-h-[180px] sm:min-h-[200px]"
-                }`}
+        <motion.article
+            ref={cardRef}
+            variants={fadeUpVariants}
+            className="group relative h-full"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
-            <img
-                src={image}
-                alt={imageAlt}
-                loading="lazy"
-                decoding="async"
-                className="size-full object-cover"
-            />
-            <div
-                className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#1a2e22]/35 via-[#1a2e22]/05 to-transparent"
-                aria-hidden
-            />
-            <div
-                className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(ellipse_at_20%_0%,rgba(205,74,38,0.2),transparent_55%)]"
-                aria-hidden
-            />
-        </div>
+            <div className="relative flex h-auto flex-col overflow-hidden rounded-[30px] shadow-[0_24px_64px_rgba(66,26,52,0.1)] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-[rgba(241,85,51,0.45)] group-hover:shadow-[0_30px_70px_rgba(66,26,52,0.14)]">
+
+                {/* Image Section */}
+                <div className="relative h-48 shrink-0 overflow-hidden sm:h-52 lg:h-56">
+                    <motion.img
+                        style={{ y: yImage, scale: 1.1 }}
+                        src={project.image}
+                        alt={project.imageAlt}
+                        draggable={false}
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-115"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-[#421a34]/75 via-transparent to-transparent opacity-65" />
+
+                    {/* Floating Company Badge */}
+                    <div className="absolute left-4 top-4">
+                        <span className="rounded-full border border-[rgba(241,85,51,0.42)] bg-[#fff7ef]/95 px-3 py-1 text-[10px] font-bold tracking-[0.15em] text-[#421a34] uppercase shadow-[0_8px_18px_rgba(66,26,52,0.18)] backdrop-blur-sm">
+                            {project.company}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Content Section */}
+                <div className="flex flex-1 p-6 sm:p-8">
+                    <div className="flex w-full flex-col gap-4">
+                        <div className="flex items-start justify-between gap-4">
+                            <h3 className="font-bushcraft text-3xl tracking-tight text-[#1a2e22] text-start">
+                                {project.title}
+                            </h3>
+
+                            <motion.a
+                                href={project.websiteUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-r from-[#ffbb71] to-[#f15533] text-white shadow-[0_10px_26px_rgba(241,85,51,0.32)] transition-transform hover:scale-[1.04]"
+                                whileHover={{ rotate: 35 }}
+                                whileTap={{ scale: 0.9 }}
+                            >
+                                <ArrowUpRight className="size-5" />
+                            </motion.a>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                            {project.skills.map((skill) => (
+                                <span
+                                    key={skill}
+                                    className="rounded-full border border-[rgba(241,85,51,0.2)] bg-[rgba(255,255,255,0.62)] px-2.5 py-1 text-[11px] font-semibold text-[#421a34] uppercase tracking-[0.06em]"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Decorative Reveal line */}
+                <motion.div
+                    className="absolute bottom-0 left-0 h-1 bg-[#F15533]"
+                    initial={{ width: 0 }}
+                    animate={{ width: isHovered ? "100%" : "0%" }}
+                />
+            </div>
+        </motion.article>
     );
 }
 
 function Projects() {
     const sectionRef = useRef(null);
     const headlineTriggerRef = useRef(null);
-    const reduceMotion = useReducedMotion();
-
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ["start end", "end start"],
+    const { typedText, showCursor } = useTypewriter("projects", {
+        triggerRef: headlineTriggerRef,
     });
 
-    const orbPrimaryY = useTransform(
-        scrollYProgress,
-        [0, 1],
-        reduceMotion ? [0, 0] : [0, 72],
-    );
-    const orbSecondaryY = useTransform(
-        scrollYProgress,
-        [0, 1],
-        reduceMotion ? [0, 0] : [0, -56],
-    );
-    const lineScaleX = useTransform(scrollYProgress, [0.08, 0.42], [0.15, 1]);
-
-    const { typedText, showCursor } = useTypewriter(
-        PROJECTS_TITLE_TYPEWRITER_TEXT,
-        {
-            triggerRef: headlineTriggerRef,
-            charDelay: 95,
-            threshold: 0.35,
-        },
-    );
+    const PROJECTS_TITLE_TYPEWRITER_TEXT = "projects";
 
     return (
-        <motion.section
-            ref={sectionRef}
+        <section
             id="projects"
-            className="projects-section relative isolate overflow-hidden px-5 py-24 sm:py-28"
-            aria-labelledby="projects-heading"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, amount: 0.12 }}
-            transition={{ duration: 0.45, ease: "easeOut" }}
+            ref={sectionRef}
+            className="section margin-top--large relative overflow-hidden pt-20 sm:pt-24"
         >
-            <motion.div
-                className="pointer-events-none absolute -left-24 top-[18%] size-112 rounded-full bg-[radial-gradient(circle_at_center,rgba(205,74,38,0.14)_0%,transparent_68%)] blur-3xl"
-                style={{ y: orbPrimaryY }}
-                aria-hidden
-            />
-            <motion.div
-                className="pointer-events-none absolute -right-32 bottom-[8%] size-104 rounded-full bg-[radial-gradient(circle_at_center,rgba(34,90,58,0.12)_0%,transparent_70%)] blur-3xl"
-                style={{ y: orbSecondaryY }}
-                aria-hidden
-            />
 
             <motion.div
                 ref={headlineTriggerRef}
@@ -197,105 +198,66 @@ function Projects() {
                         ) : null}
                     </span>
                 </h2>
-                <p className="mx-auto mt-4 max-w-xl font-inter text-[0.95rem] leading-relaxed text-[#000000] sm:text-base">
+                <p className="mx-auto mt-4 max-w-3xl font-inter text-[0.95rem] leading-relaxed text-[#000000] sm:text-base mb-6">
                     Each project includes tags that represent the company I worked with while building it, as these were developed in a professional context rather than freelance work.
                 </p>
 
             </motion.div>
 
-            <motion.ul
-                className="relative z-1 mx-auto mt-14 grid max-w-6xl grid-cols-1 gap-6 sm:mt-16 md:grid-cols-2 md:gap-7 lg:gap-8"
-                role="list"
-                variants={containerVariants}
+            <motion.div
+                className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 pb-8 px-2"
                 initial="hidden"
                 whileInView="show"
-                viewport={{ once: true, amount: 0.12 }}
+                viewport={{ once: true, amount: 0.1 }}
+                variants={{
+                    show: { transition: { staggerChildren: 0.15 } },
+                }}
             >
-                {PROJECTS.map((project) => {
-                    const wideLayout = Boolean(project.company);
-                    return (
-                        <motion.li
-                            key={project.title}
-                            role="listitem"
-                            variants={fadeUpVariants}
-                            className={wideLayout ? "md:col-span-2" : undefined}
-                        >
-                            <motion.article
-                                className={`group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/50 p-1 shadow-[0_16px_48px_-28px_rgba(45,25,20,0.12)] backdrop-blur-md transition-shadow duration-500 hover:shadow-[0_22px_56px_-24px_rgba(205,74,38,0.18)] ${wideLayout ? "lg:flex-row lg:gap-3 lg:p-1.5" : ""
-                                    }`}
-
-                            >
-                                <span
-                                    className="pointer-events-none absolute inset-0 rounded-[1.65rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                                    style={{
-                                        background:
-                                            "linear-gradient(135deg, rgba(205,74,38,0.06) 0%, transparent 42%, rgba(34,90,58,0.06) 100%)",
-                                    }}
-                                    aria-hidden
-                                />
-
-                                <div
-                                    className={`relative z-1 p-4 sm:p-5 ${wideLayout ? "lg:flex lg:w-[46%] lg:flex-col lg:justify-center lg:pb-6 lg:pl-5 lg:pr-2 lg:pt-6" : "pb-2 sm:pb-3"}`}
-                                >
-                                    <ProjectCardMedia
-                                        image={project.image}
-                                        imageAlt={project.imageAlt}
-                                        wideLayout={wideLayout}
-                                    />
-                                </div>
-
-                                <div
-                                    className={`relative z-1 flex flex-1 flex-col px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-0 ${wideLayout ? "lg:w-[54%] lg:justify-center lg:py-6 lg:pr-6" : ""}`}
-                                >
-                                    <div className="flex flex-wrap items-center gap-2">
-
-                                        {project.company ? (
-                                            <span className="rounded-full bg-[#CD4A26]/12 px-3 py-1 font-inter text-[11px] font-semibold uppercase tracking-wider text-[#9a3018] ring-1 ring-[#CD4A26]/22">
-                                                {project.company}
-                                            </span>
-                                        ) : null}
-                                    </div>
-
-                                    <h3 className="mt-4 font-bushcraft text-2xl tracking-wide text-[#1a2e22] sm:text-[1.65rem] text-start pt-5">
-                                        {project.title}
-                                    </h3>
-
-
-
-                                    <div className="mt-2">
-
-                                        <div className="mt-2.5 flex flex-wrap gap-2">
-                                            {project.skills.map((skill) => (
-                                                <span
-                                                    key={skill}
-                                                    className="rounded-full bg-linear-to-br from-[#f8faf9] to-[#eef2ef] px-3 py-1 font-inter text-xs font-medium text-[#2a3d30] ring-1 ring-[#dfe8e2]/90"
-                                                >
-                                                    {skill}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <motion.a
-                                        href={project.websiteUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="relative z-10 mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-[#1a2e22] px-5 py-2.5 font-inter text-sm font-semibold text-white shadow-[0_10px_28px_-12px_rgba(26,46,34,0.55)] ring-1 ring-[#1a2e22]/90 transition-colors hover:bg-[#243d30]"
-                                        whileHover={
-                                            reduceMotion ? undefined : { scale: 1.02 }
-                                        }
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        Visit website
-                                        <ArrowUpRight className="size-4 opacity-90" aria-hidden />
-                                    </motion.a>
-                                </div>
-                            </motion.article>
-                        </motion.li>
-                    );
-                })}
-            </motion.ul>
-        </motion.section>
+                <Swiper
+                    modules={[Autoplay]}
+                    className="select-none"
+                    style={{ padding: "2rem 0", backgroundColor: "transparent" }}
+                    grabCursor
+                    touchStartPreventDefault={false}
+                    watchOverflow
+                    observer
+                    observeParents
+                    loop={true}
+                    centeredSlides={true}
+                    autoplay={{
+                        delay: 2500,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true,
+                    }}
+                    speed={650}
+                    spaceBetween={28}
+                    breakpoints={{
+                        0: {
+                            slidesPerView: 1,
+                            centeredSlides: false,
+                        },
+                        768: {
+                            slidesPerView: 2,
+                            centeredSlides: false,
+                        },
+                        1024: {
+                            slidesPerView: 2.5,
+                            centeredSlides: true,
+                        },
+                        1440: {
+                            slidesPerView: 3,
+                            centeredSlides: true,
+                        },
+                    }}
+                >
+                    {PROJECTS.map((project) => (
+                        <SwiperSlide key={project.title} className="h-auto">
+                            <ProjectCard project={project} />
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </motion.div>
+        </section>
     );
 }
 

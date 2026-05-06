@@ -11,10 +11,8 @@ import { ParticleCanvas } from "@/components/motion-primitives/particle-canvas";
 import TextEffect from "@/components/motion-primitives/text-effect";
 import CircularText from "@/components/motion-primitives/circular-text";
 import RotatingText from "@/components/motion-primitives/rotating-text";
+import MarqueeBanner from "@/components/Homepage/Projects/MarqueeBanner";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Data
-// ─────────────────────────────────────────────────────────────────────────────
 
 const creativeSignals = [
   "Modern UI", "Animated", "Fast",
@@ -48,10 +46,6 @@ const STAT_ICONS = [
     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Constants
-// ─────────────────────────────────────────────────────────────────────────────
-
 const creativeSignalsCircularText = `${creativeSignals.join(" · ")} · `;
 
 const HERO_HEADLINE_L1_PRE = "Building ";
@@ -79,10 +73,6 @@ const INTRO_CIRCULAR_MAX_WIDTH_PX = 640;
 /** Off: skip mounting spinning circular text (layout + RAF). CSS `display:none` alone still ran the animation. */
 const INTRO_CIRCULAR_RING_ENABLED = false;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
-
 function easeOutExpo(t) {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
@@ -105,10 +95,6 @@ function useIntroCircularRingVisible() {
 
   return visible;
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// HeroStatCounter
-// ─────────────────────────────────────────────────────────────────────────────
 
 function HeroStatCounter({ value, suffix, staggerDelay, triggerCount }) {
   const wrapRef = useRef(null);
@@ -158,10 +144,6 @@ function HeroStatCounter({ value, suffix, staggerDelay, triggerCount }) {
     </div>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// HeroStatCard
-// ─────────────────────────────────────────────────────────────────────────────
 
 function HeroStatCard({ stat, index }) {
   const cardRef = useRef(null);
@@ -292,10 +274,6 @@ function HeroStatCard({ stat, index }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HeroStats
-// ─────────────────────────────────────────────────────────────────────────────
-
 function HeroStats() {
   return (
     <div id="projects" className="relative z-2">
@@ -314,10 +292,6 @@ function HeroStats() {
     </div>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// HeroCreativeHead
-// ─────────────────────────────────────────────────────────────────────────────
 
 function HeroCreativeHead() {
   const reduceMotion = useReducedMotion();
@@ -440,10 +414,6 @@ function HeroCreativeHead() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// HeroCreativeRing
-// ─────────────────────────────────────────────────────────────────────────────
-
 function HeroCreativeRing() {
   const stackRef = useRef(null);
   const [ringDiameter, setRingDiameter] = useState(INTRO_RING_MIN_PX);
@@ -489,20 +459,20 @@ function HeroCreativeRing() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// About (root export)
-// ─────────────────────────────────────────────────────────────────────────────
-
 export function About() {
   return (
-    <div className="container">
-      <section id="about" className="section margin-top--large hero-creative">
-        <HeroCreativeHead />
-      </section>
+    <>
+      <div className="container">
+        <section id="about" className="section margin-top--large hero-creative">
+          <HeroCreativeHead />
+        </section>
 
-      <HeroStats />
+        <HeroStats />
 
-      <HeroCreativeRing />
-    </div>
+        <HeroCreativeRing />
+      </div>
+      {/* <MarqueeBanner /> */}
+
+    </>
   );
 }

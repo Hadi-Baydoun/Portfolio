@@ -45,12 +45,7 @@ const Skills = () => {
             variants={container}
         >
 
-            <div
-                className="pointer-events-none absolute inset-x-8 top-[40%] h-48 rounded-[100%]
-			bg-[radial-gradient(ellipse_at_center,rgba(34,90,58,0.06)_0%,transparent_70%)]
-			blur-3xl"
-                aria-hidden
-            />
+
 
             {/* Header */}
             <motion.div
