@@ -7,63 +7,61 @@ import {
 } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useTypewriter } from "@/components/motion-primitives/useTypewriter";
+import mobile_arts from "@/assets/Projects/mobile_arts.webp";
+import adstalk from "@/assets/Projects/adstalk_pic.webp";
+import mystic from "@/assets/Projects/mystic.webp";
+import rbs from "@/assets/Projects/rbs.webp";
+import tecleef from "@/assets/Projects/tecleef.webp";
 
 
-const DUMMY_PROJECTS = [
+
+const PROJECTS = [
     {
-        slug: "aurora-commerce",
-        title: "Aurora Commerce",
-
-        image: "https://picsum.photos/seed/aurora-commerce/1200/720",
-        imageAlt: "Preview of the Aurora Commerce storefront concept",
-        skills: ["React", "Framer Motion", "Stripe"],
-        websiteUrl: "https://example.com/aurora",
-        year: "2025",
-        featured: true,
+        title: "Mobile Arts",
+        image: mobile_arts,
+        imageAlt: "Mobile Arts Website",
+        skills: ["ReactJS", "Framer Motion", "Tailwind CSS"],
+        websiteUrl: "https://mobileartsme.com/",
+        company: "Mobile Arts",
     },
     {
-        slug: "studio-os",
-        title: "Studio OS",
+        title: "Adstalk",
 
-        image: "https://picsum.photos/seed/studio-os/960/600",
-        imageAlt: "Preview of the Studio OS dashboard UI",
-        skills: ["TypeScript", "Vite", "TanStack Query"],
-        websiteUrl: "https://example.com/studio-os",
-        year: "2025",
-        featured: false,
+        image: adstalk,
+        imageAlt: "Adstalk Website",
+        skills: ["ReactJS", "Framer Motion", "Tailwind CSS"],
+        websiteUrl: "https://www.adstalk.ai/",
+        company: "Mobile Arts",
+
     },
     {
-        slug: "trailmaps",
-        title: "Trailmaps",
+        title: "Mystic Mist",
 
-        image: "https://picsum.photos/seed/trailmaps-outdoor/960/600",
-        imageAlt: "Preview of the Trailmaps route planning interface",
-        skills: ["React", "Maps API", "PWA"],
-        websiteUrl: "https://example.com/trailmaps",
-        year: "2024",
-        featured: false,
+        image: mystic,
+        imageAlt: "Mystic Mist Website",
+        skills: ["ReactJS", "Tailwind CSS", "Strapi CMS"],
+        websiteUrl: "https://mystic-mist.vercel.app/",
+        company: "Freelance",
+
     },
     {
-        slug: "pulse-health",
-        title: "Pulse Health",
+        title: "Tecleef",
 
-        image: "https://picsum.photos/seed/pulse-healthcare/960/600",
-        imageAlt: "Preview of the Pulse Health intake flow",
-        skills: ["A11y", "React Hook Form", "i18n"],
-        websiteUrl: "https://example.com/pulse",
-        year: "2024",
-        featured: false,
+        image: tecleef,
+        imageAlt: "Tecleef Website",
+        skills: ["ReactJS", "Python", "Frappe", "ERPNext", "Tailwind CSS"],
+        websiteUrl: "https://tecleef.com/",
+        company: "HoldCo Corp.",
+
     },
     {
-        slug: "orbit-analytics",
-        title: "Orbit Analytics",
+        title: "RBS",
+        image: rbs,
+        imageAlt: "RBS Website",
+        skills: ["ReactJS", "Python", "Frappe", "ERPNext", "Tailwind CSS"],
+        websiteUrl: "https://rbsme.com/",
+        company: "HoldCo Corp.",
 
-        image: "https://picsum.photos/seed/orbit-analytics/960/600",
-        imageAlt: "Preview of the Orbit Analytics metrics wall",
-        skills: ["D3", "WebSockets", "Redis"],
-        websiteUrl: "https://example.com/orbit",
-        year: "2024",
-        featured: false,
     },
 ];
 
@@ -90,16 +88,12 @@ const fadeUpVariants = {
     },
 };
 
-const cardHoverTransition = {
-    type: "spring",
-    stiffness: 320,
-    damping: 22,
-};
 
-function ProjectCardMedia({ image, imageAlt, featured }) {
+
+function ProjectCardMedia({ image, imageAlt, wideLayout }) {
     return (
         <div
-            className={`relative isolate overflow-hidden rounded-2xl bg-[#e8ede9] ring-1 ring-[#dfe8e2]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] ${featured ? "aspect-16/11 min-h-[220px] lg:aspect-auto lg:min-h-[min(100%,320px)] lg:flex-1" : "aspect-16/11 min-h-[180px] sm:min-h-[200px]"
+            className={`relative isolate overflow-hidden rounded-2xl bg-[#e8ede9] ring-1 ring-[#dfe8e2]/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] ${wideLayout ? "aspect-16/11 min-h-[220px] lg:aspect-auto lg:min-h-[min(100%,320px)] lg:flex-1" : "aspect-16/11 min-h-[180px] sm:min-h-[200px]"
                 }`}
         >
             <img
@@ -107,7 +101,7 @@ function ProjectCardMedia({ image, imageAlt, featured }) {
                 alt={imageAlt}
                 loading="lazy"
                 decoding="async"
-                className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                className="size-full object-cover"
             />
             <div
                 className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#1a2e22]/35 via-[#1a2e22]/05 to-transparent"
@@ -217,90 +211,89 @@ function Projects() {
                 whileInView="show"
                 viewport={{ once: true, amount: 0.12 }}
             >
-                {DUMMY_PROJECTS.map((project) => (
-                    <motion.li
-                        key={project.slug}
-                        role="listitem"
-                        variants={fadeUpVariants}
-                        className={project.featured ? "md:col-span-2" : undefined}
-                    >
-                        <motion.article
-                            className={`group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/50 p-1 shadow-[0_16px_48px_-28px_rgba(45,25,20,0.12)] backdrop-blur-md transition-shadow duration-500 hover:shadow-[0_22px_56px_-24px_rgba(205,74,38,0.18)] ${project.featured ? "lg:flex-row lg:gap-3 lg:p-1.5" : ""
-                                }`}
-                            whileHover={
-                                reduceMotion ? undefined : { y: -6, transition: cardHoverTransition }
-                            }
+                {PROJECTS.map((project) => {
+                    const wideLayout = Boolean(project.company);
+                    return (
+                        <motion.li
+                            key={project.title}
+                            role="listitem"
+                            variants={fadeUpVariants}
+                            className={wideLayout ? "md:col-span-2" : undefined}
                         >
-                            <span
-                                className="pointer-events-none absolute inset-0 rounded-[1.65rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                                style={{
-                                    background:
-                                        "linear-gradient(135deg, rgba(205,74,38,0.06) 0%, transparent 42%, rgba(34,90,58,0.06) 100%)",
-                                }}
-                                aria-hidden
-                            />
+                            <motion.article
+                                className={`group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/50 p-1 shadow-[0_16px_48px_-28px_rgba(45,25,20,0.12)] backdrop-blur-md transition-shadow duration-500 hover:shadow-[0_22px_56px_-24px_rgba(205,74,38,0.18)] ${wideLayout ? "lg:flex-row lg:gap-3 lg:p-1.5" : ""
+                                    }`}
 
-                            <div
-                                className={`relative z-1 p-4 sm:p-5 ${project.featured ? "lg:flex lg:w-[46%] lg:flex-col lg:justify-center lg:pb-6 lg:pl-5 lg:pr-2 lg:pt-6" : "pb-2 sm:pb-3"}`}
                             >
-                                <ProjectCardMedia
-                                    image={project.image}
-                                    imageAlt={project.imageAlt}
-                                    featured={project.featured}
+                                <span
+                                    className="pointer-events-none absolute inset-0 rounded-[1.65rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                                    style={{
+                                        background:
+                                            "linear-gradient(135deg, rgba(205,74,38,0.06) 0%, transparent 42%, rgba(34,90,58,0.06) 100%)",
+                                    }}
+                                    aria-hidden
                                 />
-                            </div>
 
-                            <div
-                                className={`relative z-1 flex flex-1 flex-col px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-0 ${project.featured ? "lg:w-[54%] lg:justify-center lg:py-6 lg:pr-6" : ""}`}
-                            >
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <span className="rounded-full bg-[#1a2e22]/06 px-3 py-1 font-inter text-[11px] font-semibold uppercase tracking-wider text-[#2a3d30] ring-1 ring-[#1a2e22]/08">
-                                        {project.year}
-                                    </span>
-                                    {project.featured ? (
-                                        <span className="rounded-full bg-[#CD4A26]/12 px-3 py-1 font-inter text-[11px] font-semibold uppercase tracking-wider text-[#9a3018] ring-1 ring-[#CD4A26]/22">
-                                            Featured
-                                        </span>
-                                    ) : null}
-                                </div>
-
-                                <h3 className="mt-4 font-bushcraft text-2xl tracking-wide text-[#1a2e22] sm:text-[1.65rem] text-start pt-5">
-                                    {project.title}
-                                </h3>
-
-
-
-                                <div className="mt-2">
-
-                                    <div className="mt-2.5 flex flex-wrap gap-2">
-                                        {project.skills.map((skill) => (
-                                            <span
-                                                key={skill}
-                                                className="rounded-full bg-linear-to-br from-[#f8faf9] to-[#eef2ef] px-3 py-1 font-inter text-xs font-medium text-[#2a3d30] ring-1 ring-[#dfe8e2]/90"
-                                            >
-                                                {skill}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <motion.a
-                                    href={project.websiteUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="relative z-10 mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-[#1a2e22] px-5 py-2.5 font-inter text-sm font-semibold text-white shadow-[0_10px_28px_-12px_rgba(26,46,34,0.55)] ring-1 ring-[#1a2e22]/90 transition-colors hover:bg-[#243d30]"
-                                    whileHover={
-                                        reduceMotion ? undefined : { scale: 1.02 }
-                                    }
-                                    whileTap={{ scale: 0.98 }}
+                                <div
+                                    className={`relative z-1 p-4 sm:p-5 ${wideLayout ? "lg:flex lg:w-[46%] lg:flex-col lg:justify-center lg:pb-6 lg:pl-5 lg:pr-2 lg:pt-6" : "pb-2 sm:pb-3"}`}
                                 >
-                                    Visit website
-                                    <ArrowUpRight className="size-4 opacity-90" aria-hidden />
-                                </motion.a>
-                            </div>
-                        </motion.article>
-                    </motion.li>
-                ))}
+                                    <ProjectCardMedia
+                                        image={project.image}
+                                        imageAlt={project.imageAlt}
+                                        wideLayout={wideLayout}
+                                    />
+                                </div>
+
+                                <div
+                                    className={`relative z-1 flex flex-1 flex-col px-5 pb-5 pt-1 sm:px-6 sm:pb-6 sm:pt-0 ${wideLayout ? "lg:w-[54%] lg:justify-center lg:py-6 lg:pr-6" : ""}`}
+                                >
+                                    <div className="flex flex-wrap items-center gap-2">
+
+                                        {project.company ? (
+                                            <span className="rounded-full bg-[#CD4A26]/12 px-3 py-1 font-inter text-[11px] font-semibold uppercase tracking-wider text-[#9a3018] ring-1 ring-[#CD4A26]/22">
+                                                {project.company}
+                                            </span>
+                                        ) : null}
+                                    </div>
+
+                                    <h3 className="mt-4 font-bushcraft text-2xl tracking-wide text-[#1a2e22] sm:text-[1.65rem] text-start pt-5">
+                                        {project.title}
+                                    </h3>
+
+
+
+                                    <div className="mt-2">
+
+                                        <div className="mt-2.5 flex flex-wrap gap-2">
+                                            {project.skills.map((skill) => (
+                                                <span
+                                                    key={skill}
+                                                    className="rounded-full bg-linear-to-br from-[#f8faf9] to-[#eef2ef] px-3 py-1 font-inter text-xs font-medium text-[#2a3d30] ring-1 ring-[#dfe8e2]/90"
+                                                >
+                                                    {skill}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <motion.a
+                                        href={project.websiteUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="relative z-10 mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-[#1a2e22] px-5 py-2.5 font-inter text-sm font-semibold text-white shadow-[0_10px_28px_-12px_rgba(26,46,34,0.55)] ring-1 ring-[#1a2e22]/90 transition-colors hover:bg-[#243d30]"
+                                        whileHover={
+                                            reduceMotion ? undefined : { scale: 1.02 }
+                                        }
+                                        whileTap={{ scale: 0.98 }}
+                                    >
+                                        Visit website
+                                        <ArrowUpRight className="size-4 opacity-90" aria-hidden />
+                                    </motion.a>
+                                </div>
+                            </motion.article>
+                        </motion.li>
+                    );
+                })}
             </motion.ul>
         </motion.section>
     );
