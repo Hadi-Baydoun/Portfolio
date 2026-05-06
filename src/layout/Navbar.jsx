@@ -48,6 +48,16 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const closeIfDesktop = () => {
+      if (mq.matches) setMobileMenuOpen(false);
+    };
+    closeIfDesktop();
+    mq.addEventListener("change", closeIfDesktop);
+    return () => mq.removeEventListener("change", closeIfDesktop);
+  }, [setMobileMenuOpen]);
+
   const goToSection = useCallback(
     (hash) => {
       setMobileMenuOpen(false);
@@ -61,38 +71,21 @@ const Navbar = () => {
     navigate({ pathname: "/", hash: "#hero" });
   }, [navigate, setMobileMenuOpen]);
 
-  const mobilePanelVariants = {
-    hidden: { opacity: 0, y: 28 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
-    },
-    exit: {
-      opacity: 0,
-      y: 20,
-      transition: { duration: 0.28, ease: "easeIn" },
-    },
-  };
-
-  const mobileLinkVariants = {
-    hidden: { opacity: 0, x: -12 },
-    visible: (i) => ({
-      opacity: 1,
-      x: 0,
-      transition: { delay: 0.06 + i * 0.05, duration: 0.35, ease: "easeOut" },
-    }),
-    exit: { opacity: 0, x: -8 },
-  };
-
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-100 flex items-center justify-between px-6 py-4 transition-all duration-300 ${navSolid ? "backdrop-blur-sm bg-black/10" : ""
-          }`}
+        className={`fixed top-0 left-0 right-0 z-100 flex items-center justify-between px-6 py-4 transition-colors duration-300 ${navSolid ? "backdrop-blur-sm bg-black/10" : ""
+          } ${mobileMenuOpen ? "pointer-events-none" : ""}`}
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        animate={{
+          opacity: mobileMenuOpen ? 0 : 1,
+          y: 0,
+        }}
+        transition={
+          mobileMenuOpen
+            ? { duration: 0.2, ease: "easeOut" }
+            : { duration: 0.6, ease: "easeOut" }
+        }
       >
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -115,14 +108,21 @@ const Navbar = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           {NAV_LINKS.map((item) => (
-            <button
+            <motion.button
               type="button"
               key={item.hash}
               onClick={() => goToSection(item.hash)}
-              className="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap text-black cursor-pointer font-inter hover:bg-black/5"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 420, damping: 26 }}
+              className="group relative px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap text-neutral-900 cursor-pointer font-inter overflow-hidden"
             >
-              {item.label}
-            </button>
+              <span className="pointer-events-none absolute inset-0 rounded-full bg-linear-to-br from-[#CD4A26]/14 via-[#CD4A26]/6 to-transparent opacity-0 scale-95 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100" aria-hidden />
+              <span className="pointer-events-none absolute left-1/2 bottom-1.5 h-0.5 w-[72%] max-w-20 -translate-x-1/2 rounded-full bg-[#CD4A26] shadow-[0_0_10px_rgba(205,74,38,0.4)] origin-center scale-x-0 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" aria-hidden />
+              <span className="relative z-10 inline-block transition-all duration-300  group-hover:translate-y-[-0.5px]">
+                {item.label}
+              </span>
+            </motion.button>
           ))}
         </motion.div>
 
@@ -133,9 +133,12 @@ const Navbar = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
         >
 
-          <a
+          <motion.a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="w-9 h-9 cursor-pointer rounded-full bg-white/60 backdrop-blur-md border border-white/30 flex items-center justify-center hover:bg-white/80 transition-all duration-200 shadow-sm"
+            whileHover={{ scale: 1.08, rotate: -8 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 400, damping: 18 }}
+            className="w-9 h-9 cursor-pointer rounded-full bg-white/60 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-sm transition-[background-color,box-shadow,border-color] duration-300 hover:border-[#CD4A26]/45 hover:bg-white/85 hover:shadow-[0_6px_24px_rgba(205,74,38,0.18)]"
             aria-label="Email"
           >
             <svg
@@ -151,7 +154,7 @@ const Navbar = () => {
               <rect width="20" height="16" x="2" y="4" rx="2" />
               <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
             </svg>
-          </a>
+          </motion.a>
         </motion.div>
 
         <motion.button
@@ -180,86 +183,90 @@ const Navbar = () => {
       </motion.nav>
 
       <AnimatePresence>
-        {mobileMenuOpen ? (
+        {mobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-90 md:hidden pointer-events-none"
+            className="fixed inset-0 z-120 md:hidden flex flex-col min-h-dvh isolate"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.28 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
           >
-            <button
-              type="button"
-              aria-label="Close menu"
-              tabIndex={-1}
-              className="absolute inset-0 bg-black/40 pointer-events-auto cursor-default border-none p-0 m-0"
-              onClick={() => setMobileMenuOpen(false)}
+            <div
+              className="absolute inset-0 bg-linear-to-b from-[#5c3428]/96 via-[#CD4A26]/28 to-[#FFEEE6]"
+              aria-hidden
             />
-            <motion.div
-              className="absolute left-0 right-0 bottom-0 top-17 pointer-events-auto flex flex-col bg-white/90 backdrop-blur-xl border-t border-white/50 shadow-[0_-16px_40px_rgba(0,0,0,0.08)] overflow-hidden"
-              variants={mobilePanelVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 py-6 pb-8">
-                <div className="rounded-3xl bg-white/60 backdrop-blur-md border border-white/40 shadow-sm p-2">
-                  {NAV_LINKS.map((item, i) => (
-                    <motion.div
-                      key={item.hash}
-                      custom={i}
-                      variants={mobileLinkVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => goToSection(item.hash)}
-                        className="w-full text-left px-4 py-3.5 rounded-2xl text-base font-medium text-black font-inter transition-colors hover:bg-black/4 active:bg-black/7"
-                      >
-                        {item.label}
-                      </button>
-                    </motion.div>
-                  ))}
-                </div>
+            <div
+              className="absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_-20%,rgba(205,74,38,0.35),transparent_55%)] pointer-events-none"
+              aria-hidden
+            />
 
-                <div className="mt-6 flex flex-col gap-3">
-
-                  <motion.div
-                    custom={NAV_LINKS.length + 1}
-                    variants={mobileLinkVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="flex justify-center"
+            <div className="relative flex flex-col flex-1 min-h-0">
+              <header className="relative shrink-0 flex items-center justify-between px-6 pt-[max(1.25rem,env(safe-area-inset-top))] pb-5">
+                <button
+                  type="button"
+                  onClick={goHome}
+                  className="text-[#CD4A26] font-extrabold cursor-pointer text-xl tracking-tight font-inter text-left hover:opacity-[0.88] transition-opacity"
+                >
+                  Hadi Baydoun.
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-white/55 text-neutral-900 shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-white/55 active:scale-[0.97] transition-transform"
+                  aria-label="Close menu"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
                   >
-                    <a
-                      href={`mailto:${CONTACT_EMAIL}`}
-                      className="w-12 h-12 rounded-full bg-white/60 backdrop-blur-md border border-white/30 flex items-center justify-center hover:bg-white/80 transition-all duration-200 shadow-sm"
-                      aria-label="Email"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-5 h-5 text-[#CA4F4E]"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <rect width="20" height="16" x="2" y="4" rx="2" />
-                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                      </svg>
-                    </a>
-                  </motion.div>
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                  </svg>
+                </button>
+              </header>
+
+              <div className="relative mx-4 h-px bg-linear-to-r from-transparent via-black/12 to-transparent shrink-0" />
+
+              <nav
+                className="relative flex-1 overflow-y-auto px-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3"
+                aria-label="Mobile"
+              >
+                <div
+                  className="rounded-3xl border border-white/55 bg-white/45 backdrop-blur-md shadow-[0_10px_40px_rgba(45,25,20,0.08),inset_0_1px_0_rgba(255,255,255,0.65)] px-1.5 py-2"
+                >
+                  <ul className="flex flex-col gap-0.5 py-2">
+                    {NAV_LINKS.map((item, i) => (
+                      <li key={item.hash}>
+                        <button
+                          type="button"
+                          onClick={() => goToSection(item.hash)}
+                          className="group w-full flex items-baseline gap-4 rounded-2xl px-3.5 py-3.5 text-left font-inter transition-colors hover:bg-white/55 active:bg-white/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#CD4A26]"
+                        >
+                          <span className="w-7 shrink-0 text-xs font-semibold tabular-nums tracking-widest text-[#CD4A26]">
+                            {String(i + 1).padStart(2, "0")}
+                          </span>
+                          <span className="text-lg font-semibold tracking-tight text-neutral-950 group-hover:text-[#3d231c] transition-colors">
+                            {item.label}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+
+
                 </div>
-              </div>
-            </motion.div>
+
+              </nav>
+            </div>
           </motion.div>
-        ) : null}
+        )}
       </AnimatePresence>
     </>
   );
