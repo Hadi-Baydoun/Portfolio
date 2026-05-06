@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import {
     motion,
     useScroll,
@@ -69,8 +69,6 @@ const fadeUpVariants = {
 
 function ProjectCard({ project }) {
     const cardRef = useRef(null);
-    const [isHovered, setIsHovered] = useState(false);
-
 
 
     // Parallax effect for the image inside the card
@@ -85,69 +83,72 @@ function ProjectCard({ project }) {
             ref={cardRef}
             variants={fadeUpVariants}
             className="group relative h-full"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="relative flex h-auto flex-col overflow-hidden rounded-[30px] shadow-[0_24px_64px_rgba(66,26,52,0.1)] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-[rgba(241,85,51,0.45)] group-hover:shadow-[0_30px_70px_rgba(66,26,52,0.14)]">
+            <div className="group relative flex h-auto flex-col rounded-[30px]">
 
-                {/* Image Section */}
-                <div className="relative h-48 shrink-0 overflow-hidden sm:h-52 lg:h-56">
-                    <motion.img
-                        style={{ y: yImage, scale: 1.1 }}
-                        src={project.image}
-                        alt={project.imageAlt}
-                        draggable={false}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-115"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-[#421a34]/75 via-transparent to-transparent opacity-65" />
+                {/* Main card layer — rest: hard BR offset; hover: same shape, stronger fill */}
+                <div className="relative z-10 flex flex-col overflow-hidden rounded-[30px] bg-white shadow-[8px_8px_0_0_rgba(241,85,51,0.22)] transition-shadow duration-300 ease-out group-hover:shadow-[8px_8px_0_0_rgba(241,85,51,0.55)]">
 
-                    {/* Floating Company Badge */}
-                    <div className="absolute left-4 top-4">
-                        <span className="rounded-full border border-[rgba(241,85,51,0.42)] bg-[#fff7ef]/95 px-3 py-1 text-[10px] font-bold tracking-[0.15em] text-[#421a34] uppercase shadow-[0_8px_18px_rgba(66,26,52,0.18)] backdrop-blur-sm">
-                            {project.company}
-                        </span>
-                    </div>
-                </div>
+                    {/* Image Section */}
+                    <div className="relative h-48 shrink-0 overflow-hidden sm:h-52 lg:h-56">
 
-                {/* Content Section */}
-                <div className="flex flex-1 p-6 sm:p-8">
-                    <div className="flex w-full flex-col gap-4">
-                        <div className="flex items-start justify-between gap-4">
-                            <h3 className="font-bushcraft text-3xl tracking-tight text-[#1a2e22] text-start">
-                                {project.title}
-                            </h3>
+                        <motion.img
+                            style={{ y: yImage, scale: 1.1 }}
+                            src={project.image}
+                            alt={project.imageAlt}
+                            draggable={false}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
 
-                            <motion.a
-                                href={project.websiteUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-r from-[#ffbb71] to-[#f15533] text-white shadow-[0_10px_26px_rgba(241,85,51,0.32)] transition-transform hover:scale-[1.04]"
-                                whileHover={{ rotate: 35 }}
-                                whileTap={{ scale: 0.9 }}
-                            >
-                                <ArrowUpRight className="size-5" />
-                            </motion.a>
+                        <div className="absolute inset-0 bg-linear-to-t from-[#421a34]/70 via-transparent to-transparent opacity-70" />
+
+                        {/* Company badge */}
+                        <div className="absolute left-4 top-4">
+                            <span className="rounded-full border border-[rgba(241,85,51,0.4)] bg-[#fff7ef]/95 px-3 py-1 text-[10px] font-bold tracking-[0.15em] text-[#421a34] uppercase shadow-[0_6px_14px_rgba(0,0,0,0.12)] backdrop-blur-sm">
+                                {project.company}
+                            </span>
                         </div>
+                    </div>
 
-                        <div className="flex flex-wrap gap-2">
-                            {project.skills.map((skill) => (
-                                <span
-                                    key={skill}
-                                    className="rounded-full border border-[rgba(241,85,51,0.2)] bg-[rgba(255,255,255,0.62)] px-2.5 py-1 text-[11px] font-semibold text-[#421a34] uppercase tracking-[0.06em]"
+                    {/* Content */}
+                    <div className="flex flex-1 p-6 sm:p-8">
+                        <div className="flex w-full flex-col gap-4">
+
+                            <div className="flex items-start justify-between gap-4">
+                                <h3 className="font-bushcraft text-3xl tracking-tight text-[#1a2e22]">
+                                    {project.title}
+                                </h3>
+
+                                <motion.a
+                                    href={project.websiteUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-r from-[#ffbb71] to-[#f15533] text-white shadow-[4px_4px_0px_rgba(0,0,0,0.15)] transition-all duration-300 hover:shadow-[0px_0px_0px_rgba(0,0,0,0.2),8px_8px_20px_rgba(241,85,51,0.35)] hover:translate-y-[-1px]"
+                                    whileTap={{ scale: 0.9 }}
                                 >
-                                    {skill}
-                                </span>
-                            ))}
+                                    <ArrowUpRight className="size-5" />
+                                </motion.a>
+                            </div>
+
+                            {/* Skills */}
+                            <div className="flex flex-wrap gap-2">
+                                {project.skills.map((skill) => (
+                                    <span
+                                        key={skill}
+                                        className="rounded-full border border-[rgba(241,85,51,0.2)] bg-[rgba(255,255,255,0.7)] px-2.5 py-1 text-[11px] font-semibold text-[#421a34] uppercase tracking-[0.06em]"
+                                    >
+                                        {skill}
+                                    </span>
+                                ))}
+                            </div>
+
                         </div>
                     </div>
-                </div>
 
-                {/* Decorative Reveal line */}
-                <motion.div
-                    className="absolute bottom-0 left-0 h-1 bg-[#F15533]"
-                    initial={{ width: 0 }}
-                    animate={{ width: isHovered ? "100%" : "0%" }}
-                />
+                    {/* bottom accent line */}
+                    {/* <div className="h-1 w-0 bg-[#F15533] transition-all duration-300 group-hover:w-full shadow-[0_0_12px_rgba(241,85,51,0.6)]" /> */}
+
+                </div>
             </div>
         </motion.article>
     );
@@ -216,7 +217,7 @@ function Projects() {
                 <Swiper
                     modules={[Autoplay]}
                     className="select-none"
-                    style={{ padding: "2rem 0", backgroundColor: "transparent" }}
+                    style={{ padding: "2rem 0", backgroundColor: "transparent", boxShadow: "none" }}
                     grabCursor
                     touchStartPreventDefault={false}
                     watchOverflow
