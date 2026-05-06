@@ -96,7 +96,7 @@ const Navbar = () => {
           <button
             type="button"
             onClick={goHome}
-            className="text-[#CD4A26] font-extrabold cursor-pointer text-xl tracking-tight hover:opacity-80 transition-opacity font-inter text-left"
+            className={`font-inter cursor-pointer text-left text-xl font-extrabold tracking-tight transition-colors duration-300 ${navSolid ? "text-[#CD4A26]" : "text-white"}`}
           >
             Hadi Baydoun.
           </button>
@@ -206,7 +206,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={goHome}
-                  className="text-[#CD4A26] font-extrabold cursor-pointer text-xl tracking-tight font-inter text-left hover:opacity-[0.88] transition-opacity"
+                  className={`font-inter cursor-pointer text-left text-xl font-extrabold tracking-tight transition-colors duration-300 ${navSolid ? "text-[#CD4A26]" : "text-white"}`}
                 >
                   Hadi Baydoun.
                 </button>
