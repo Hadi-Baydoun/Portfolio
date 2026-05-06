@@ -144,7 +144,7 @@
   .header.home-header .header-background .titles .title--upper {
     font-size: 9em;
     display: block;
-    margin-top: -110px;
+    margin-top: -105px;
   }
 }
 
@@ -1097,9 +1097,9 @@
 
 .hero-creative__intro-orbit {
   position: absolute;
-  top: clamp(-8.5rem, -16vw, -5.5rem);
-  left: 23%;
-  right: auto;
+  top: clamp(-1.75rem, -3vw, 1rem);
+  left: auto;
+  right: clamp(-5.25rem, -5vw, -3rem);
   bottom: auto;
   z-index: 0;
   display: flex;
@@ -1109,7 +1109,6 @@
   margin: 0;
   overflow: visible;
   pointer-events: none;
-  /* transform: translate(-50%, -50%); */
 }
 
 .hero-creative__eyebrow {
@@ -1422,14 +1421,44 @@
 
 /* Left column: number sits past the right edge of the card (toward center) */
 .linear-block--experience-step.linear-block--left .linear-block__step-index {
-  left: 100%;
+  left: 98%;
   margin-left: clamp(10.5rem, 13vw, 15rem);
 }
 
 /* Right column: number sits past the left edge of the card */
 .linear-block--experience-step.linear-block--right .linear-block__step-index {
-  right: 100%;
+  right: 99%;
   margin-right: clamp(2rem, 3vw, 2.5rem);
+}
+
+/* Tablet (md-only): unify step badges on the card’s right edge; slim left gutter vs desktop container padding */
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  #app .hero-process-steps > .container {
+    padding-left: clamp(0.75rem, 2vw, 1.15rem);
+  }
+
+  .linear-block--experience-step.linear-block--left .linear-block__step-index,
+  .linear-block--experience-step.linear-block--right .linear-block__step-index {
+    left: 103%;
+    right: auto;
+    margin-right: 0;
+    margin-left: clamp(0.1rem, 1.25vw, 0.55rem);
+  }
+
+  /* Step 2 (holdoco / right column): badge sits on the card’s right → line runs left into the card */
+  .hero-process-steps
+    .linear-content--solo-copy.holdoco
+    .linear-block--experience-step.linear-block--right
+    .linear-block__step-index
+    .linear-block__step-line {
+    right: calc(100% - 2px);
+    left: auto;
+    background: linear-gradient(
+      270deg,
+      rgba(241, 85, 51, 0.25),
+      rgba(241, 85, 51, 0.72)
+    );
+  }
 }
 
 @keyframes linear-block-step-ring-pulse {
@@ -1503,16 +1532,19 @@
   );
 }
 
-/* Right rows → marker on outer left, line aims right */
-.linear-block--experience-step.linear-block--right
-  .linear-block__step-index
-  .linear-block__step-line {
-  left: calc(100% - 2px);
-  background: linear-gradient(
-    90deg,
-    rgba(241, 85, 51, 0.25),
-    rgba(241, 85, 51, 0.72)
-  );
+/* Right rows → marker on outer left, line aims right (phone + lg+; tablet places badge on the right for step 2 only) */
+@media only screen and (max-width: 767px), only screen and (min-width: 1024px) {
+  .linear-block--experience-step.linear-block--right
+    .linear-block__step-index
+    .linear-block__step-line {
+    left: calc(100% - 2px);
+    right: auto;
+    background: linear-gradient(
+      90deg,
+      rgba(241, 85, 51, 0.25),
+      rgba(241, 85, 51, 0.72)
+    );
+  }
 }
 
 .linear-content--creative .linear-block--left .linear-block__tags {

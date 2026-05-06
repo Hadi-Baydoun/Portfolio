@@ -1,18 +1,17 @@
-import imgCss from "@/assets/Skills/css.png";
-import imgFigma from "@/assets/Skills/figma.png";
-import imgGit from "@/assets/Skills/git.png";
-import imgHtml from "@/assets/Skills/html.png";
-import imgJs from "@/assets/Skills/js.png";
-import imgPython from "@/assets/Skills/python.png";
-import imgReact from "@/assets/Skills/reactjs.png";
-import imgTypescript from "@/assets/Skills/typescript.png";
-import imgTailwind from "@/assets/Skills/tailwind.png";
-import imgWordpress from "@/assets/Skills/wordpress.png";
-import imgNodejs from "@/assets/Skills/node.png";
-import imgMysql from "@/assets/Skills/mysql.png";
-import imgMariadb from "@/assets/Skills/mariadb.png";
-
-import imgErpNext from "@/assets/Skills/erpnext.svg";
+import imgCss from "@/assets/Skills/css.webp";
+import imgFigma from "@/assets/Skills/figma.webp";
+import imgGit from "@/assets/Skills/git.webp";
+import imgHtml from "@/assets/Skills/html.webp";
+import imgJs from "@/assets/Skills/js.webp";
+import imgPython from "@/assets/Skills/python.webp";
+import imgReact from "@/assets/Skills/reactjs.webp";
+import imgTypescript from "@/assets/Skills/typescript.webp";
+import imgTailwind from "@/assets/Skills/tailwind.webp";
+import imgWordpress from "@/assets/Skills/wordpress.webp";
+import imgNodejs from "@/assets/Skills/node.webp";
+import imgMysql from "@/assets/Skills/mysql.webp";
+import imgMariadb from "@/assets/Skills/mariadb.webp";
+import imgErpNext from "@/assets/Skills/erpnext.webp";
 
 export const EXPLORE_SKILLS = [
   { src: imgHtml, label: "HTML" },

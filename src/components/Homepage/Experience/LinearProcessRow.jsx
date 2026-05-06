@@ -67,7 +67,9 @@ export function LinearProcessRow({
               ) : null}
             </span>
           </h4>
-          <p>{body}</p>
+          <p className="font-inter text-sm! leading-relaxed! sm:text-base!">
+            {body}
+          </p>
           <div
             className="linear-block__tags"
             aria-label={`${eyebrow} focus areas`}

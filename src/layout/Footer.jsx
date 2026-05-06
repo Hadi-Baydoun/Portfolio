@@ -52,7 +52,7 @@ const Footer = () => {
 
 
 
-					<div className="footer-socials-container">
+					{/* <div className="footer-socials-container">
 						<ul className="socials-list">
 							<li className="social-item">
 								<Link
@@ -64,7 +64,7 @@ const Footer = () => {
 								</Link>
 							</li>
 						</ul>
-					</div>
+					</div> */}
 
 				</div>
 			</div>

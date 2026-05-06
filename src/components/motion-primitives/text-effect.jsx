@@ -159,11 +159,45 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
 
         let globalIndex = 0;
         return lines.map((line, lineIndex) => {
-            const parts = type === "words"
-                ? (line.match(WORD_TOKEN_PATTERN) || [])
-                : line.split("");
-
             const startIndex = globalIndex;
+
+            if (type === "chars") {
+                /** Keep whole words on one line (per-word nowrap); still animate per character. */
+                const charEntries = [];
+                let g = 0;
+                let i = 0;
+                while (i < line.length) {
+                    const ch = line[i];
+                    if (ch === " " || ch === "\t") {
+                        charEntries.push({
+                            kind: "single",
+                            text: ch,
+                            index: globalIndex + g,
+                            key: `${lineIndex}-c-${g}`,
+                        });
+                        g += 1;
+                        i += 1;
+                    } else {
+                        let word = "";
+                        while (i < line.length && line[i] !== " " && line[i] !== "\t") {
+                            word += line[i];
+                            i += 1;
+                        }
+                        charEntries.push({
+                            kind: "word",
+                            text: word,
+                            startIndex: globalIndex + g,
+                            key: `${lineIndex}-w-${g}`,
+                        });
+                        g += word.length;
+                    }
+                }
+                globalIndex += g;
+                return { lineIndex, startIndex, charEntries };
+            }
+
+            const parts = (line.match(WORD_TOKEN_PATTERN) || []);
+
             globalIndex += parts.length;
 
             const fragments = parts.map((part, i) => (
@@ -235,34 +269,83 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
             }}
             {...rest}
         >
-            {lineRuns.map(({ lineIndex, fragments, startIndex }) => (
+            {lineRuns.map(({ lineIndex, fragments, startIndex, charEntries }) => (
                 <span
                     key={`line-${lineIndex}`}
                     style={{ display: children != null ? "inline" : "block" }}
                 >
-                    {fragments.map((item, i) => {
-                        const index = startIndex + i;
-                        const itemKey = `${lineIndex}-${i}`;
+                    {charEntries
+                        ? charEntries.map((entry) =>
+                            entry.kind === "single" ? (
+                                <ConnectedItem
+                                    key={entry.key}
+                                    item={entry.text}
+                                    mouseX={mouseX}
+                                    mouseY={mouseY}
+                                    type={type}
+                                    proximityRadius={proximityRadius}
+                                    proximityMaxScale={proximityMaxScale}
+                                    proximityMaxY={proximityMaxY}
+                                    initialItem={initialItem}
+                                    animateTarget={animateTarget}
+                                    entranceTransition={entranceTransition}
+                                    revealDelay={(delay / 1000) + (entry.index * stagger)}
+                                    itemRef={() => itemRefs.current.get(entry.key) ?? {}}
+                                    segmentClassName={segmentClassName}
+                                />
+                            ) : (
+                                <span
+                                    key={entry.key}
+                                    style={{ display: "inline-block", whiteSpace: "nowrap" }}
+                                >
+                                    {Array.from(entry.text).map((char, j) => {
+                                        const index = entry.startIndex + j;
+                                        const ck = `${entry.key}-${j}`;
+                                        return (
+                                            <ConnectedItem
+                                                key={ck}
+                                                item={char}
+                                                mouseX={mouseX}
+                                                mouseY={mouseY}
+                                                type={type}
+                                                proximityRadius={proximityRadius}
+                                                proximityMaxScale={proximityMaxScale}
+                                                proximityMaxY={proximityMaxY}
+                                                initialItem={initialItem}
+                                                animateTarget={animateTarget}
+                                                entranceTransition={entranceTransition}
+                                                revealDelay={(delay / 1000) + (index * stagger)}
+                                                itemRef={() => itemRefs.current.get(ck) ?? {}}
+                                                segmentClassName={segmentClassName}
+                                            />
+                                        );
+                                    })}
+                                </span>
+                            ),
+                        )
+                        : fragments.map((item, i) => {
+                            const index = startIndex + i;
+                            const itemKey = `${lineIndex}-${i}`;
 
-                        return (
-                            <ConnectedItem
-                                key={itemKey}
-                                item={item}
-                                mouseX={mouseX}
-                                mouseY={mouseY}
-                                type={type}
-                                proximityRadius={proximityRadius}
-                                proximityMaxScale={proximityMaxScale}
-                                proximityMaxY={proximityMaxY}
-                                initialItem={initialItem}
-                                animateTarget={animateTarget}
-                                entranceTransition={entranceTransition}
-                                revealDelay={(delay / 1000) + (index * stagger)}
-                                itemRef={() => itemRefs.current.get(itemKey) ?? {}}
-                                segmentClassName={segmentClassName}
-                            />
-                        );
-                    })}
+                            return (
+                                <ConnectedItem
+                                    key={itemKey}
+                                    item={item}
+                                    mouseX={mouseX}
+                                    mouseY={mouseY}
+                                    type={type}
+                                    proximityRadius={proximityRadius}
+                                    proximityMaxScale={proximityMaxScale}
+                                    proximityMaxY={proximityMaxY}
+                                    initialItem={initialItem}
+                                    animateTarget={animateTarget}
+                                    entranceTransition={entranceTransition}
+                                    revealDelay={(delay / 1000) + (index * stagger)}
+                                    itemRef={() => itemRefs.current.get(itemKey) ?? {}}
+                                    segmentClassName={segmentClassName}
+                                />
+                            );
+                        })}
                 </span>
             ))}
         </motion.span>

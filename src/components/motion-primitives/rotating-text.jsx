@@ -190,7 +190,10 @@ const RotatingText = forwardRef((props, ref) => {
               .reduce((sum, word) => sum + word.characters.length, 0);
 
             return (
-              <span key={wordIndex} className={cn('inline-flex', splitLevelClassName)}>
+              <span
+                key={wordIndex}
+                className={cn('inline-flex flex-nowrap shrink-0', splitLevelClassName)}
+              >
                 {wordObj.characters.map((char, charIndex) => (
                   <motion.span
                     key={charIndex}

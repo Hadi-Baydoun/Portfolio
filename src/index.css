@@ -418,10 +418,17 @@ strong {
   #app .section.margin--large {
     margin: 8em 0;
   }
+
+  #experience {
+    margin-top: 0;
+  }
+}
+#experience {
+  margin-top: 5em;
 }
 
 #app .section.margin-top--large {
-  margin: 2em 0 0;
+  margin: 3em 0 0;
 }
 
 #app .section.margin-top--small {

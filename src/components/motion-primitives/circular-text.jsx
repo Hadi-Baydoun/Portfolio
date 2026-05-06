@@ -1,9 +1,9 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import { motion } from "framer-motion";
 
 const BASE_DIAMETER = 160;
-/** Applied to the incoming `diameter` prop so the ring renders smaller without changing callers. */
-const LAYOUT_SCALE = 0.78;
+/** Applied to the incoming `diameter` prop so the ring renders smaller without changing callers proportionally beyond this factor. */
+const LAYOUT_SCALE = 0.66;
 const DESKTOP_DIAMETER_THRESHOLD = 640;
 const DESKTOP_MIN_LETTER_PX = 28;
 const DESKTOP_MAX_LETTER_PX = 60;
@@ -11,14 +11,11 @@ const DESKTOP_MAX_LETTER_PX = 60;
 const CircularText = memo(function CircularText({
   text,
   spinDuration = 20,
-  onHover = "speedUp",
-  interactive = true,
   diameter = BASE_DIAMETER,
   className = "",
 }) {
   const letters = useMemo(() => Array.from(text), [text]);
   const resolvedDiameter = Math.max(1, Math.round(diameter * LAYOUT_SCALE));
-  const radiusScale = resolvedDiameter / BASE_DIAMETER;
   const letterFontPx = useMemo(() => {
     const n = Math.max(letters.length, 1);
     const arcPerGlyph = (Math.PI * resolvedDiameter) / n;
@@ -40,47 +37,20 @@ const CircularText = memo(function CircularText({
       Math.max(responsiveMinPx, Math.min(responsiveMaxPx, arcPerGlyph * 0.32)),
     );
   }, [letters.length, resolvedDiameter]);
-  const [hovered, setHovered] = useState(false);
-
-  const rotateDuration = useMemo(() => {
-    if (!interactive || !hovered) return spinDuration;
-    switch (onHover) {
-      case "slowDown":
-        return spinDuration * 2;
-      case "speedUp":
-        return spinDuration / 4;
-      case "pause":
-        return spinDuration * 120;
-      case "goBonkers":
-        return spinDuration / 20;
-      default:
-        return spinDuration;
-    }
-  }, [interactive, hovered, onHover, spinDuration]);
-
-  const scale =
-    interactive && hovered && onHover === "goBonkers" ? 0.8 : 1;
 
   return (
     <motion.div
-      className={`m-0 mx-auto rounded-full relative text-white font-black text-center origin-center shrink-0 ${interactive ? "cursor-pointer" : "pointer-events-none cursor-default"} ${className}`}
+      className={`m-0 ml-auto rounded-full relative text-white font-black text-center origin-center shrink-0 pointer-events-none ${className}`}
       style={{ width: resolvedDiameter, height: resolvedDiameter }}
-      initial={{ rotate: 0, scale: 1 }}
-      animate={{ rotate: 360, scale }}
+      initial={{ rotate: 0 }}
+      animate={{ rotate: 360 }}
       transition={{
         rotate: {
-          duration: rotateDuration,
+          duration: spinDuration,
           repeat: Infinity,
           ease: "linear",
         },
-        scale: { type: "spring", damping: 20, stiffness: 300 },
       }}
-      {...(interactive
-        ? {
-          onHoverStart: () => setHovered(true),
-          onHoverEnd: () => setHovered(false),
-        }
-        : {})}
     >
       {letters.map((letter, i) => {
         const rotationDeg = (360 / letters.length) * i;

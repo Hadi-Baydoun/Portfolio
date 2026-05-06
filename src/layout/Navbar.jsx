@@ -9,8 +9,8 @@ const CONTACT_EMAIL = "hadibaydoun17@gmail.com";
 const NAV_LINKS = [
   { label: "About", hash: "about" },
   { label: "Projects", hash: "projects" },
-  { label: "Skills", hash: "skills" },
   { label: "Work Experience", hash: "experience" },
+  { label: "Skills", hash: "skills" },
   { label: "Contact Me", hash: "contact" },
 ];
 
@@ -102,7 +102,7 @@ const Navbar = () => {
           <button
             type="button"
             onClick={goHome}
-            className="text-[#F15533] font-extrabold cursor-pointer text-xl tracking-tight hover:opacity-80 transition-opacity font-inter text-left"
+            className="text-[#CD4A26] font-extrabold cursor-pointer text-xl tracking-tight hover:opacity-80 transition-opacity font-inter text-left"
           >
             Hadi Baydoun.
           </button>

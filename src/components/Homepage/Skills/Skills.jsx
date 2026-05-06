@@ -1,6 +1,5 @@
 import { memo, useRef } from "react";
 import { motion } from "framer-motion";
-import { EXPLORE_HEADER_IMG } from "@/components/Homepage/Skills/exploreHeaderAssets";
 import { EXPLORE_SKILLS } from "@/components/Homepage/Skills/exploreSkillsAssets";
 import { useTypewriter } from "@/components/motion-primitives/useTypewriter";
 
@@ -45,17 +44,6 @@ const Skills = () => {
             viewport={{ once: true, amount: 0.25 }}
             variants={container}
         >
-            {/* Background */}
-            <div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 top-0 flex h-[min(30vh,18rem)] justify-center opacity-[0.06] invert"
-            >
-                <img
-                    src={EXPLORE_HEADER_IMG.stars}
-                    alt=""
-                    className="h-full w-auto max-w-[120%] object-cover"
-                />
-            </div>
 
             <div
                 className="pointer-events-none absolute inset-x-8 top-[40%] h-48 rounded-[100%]
@@ -92,7 +80,7 @@ const Skills = () => {
 
             {/* Grid */}
             <motion.ul
-                className="relative z-1 mx-auto mt-14 grid max-w-3xl grid-cols-2 gap-x-6 gap-y-10 sm:mt-16 sm:grid-cols-2 lg:grid-cols-7 sm:gap-x-16 lg:gap-x-32 sm:gap-y-12"
+                className="relative z-1 mx-auto mt-14 grid max-w-3xl grid-cols-2 gap-x-6 md:gap-x-0 gap-y-10 sm:mt-16 md:grid-cols-5 lg:grid-cols-7 lg:gap-x-32 sm:gap-y-12"
                 role="list"
                 variants={container}
             >

@@ -1,49 +1,50 @@
-import { useLayoutEffect, useRef, useState, useEffect } from "react";
-import {
-  animate,
-  motion,
-  useInView,
-  useReducedMotion,
-} from "framer-motion";
+import { useLayoutEffect, useRef, useState, useEffect, useCallback } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { ParticleCanvas } from "@/components/motion-primitives/particle-canvas";
 import icon_wrapper from "@/assets/icon_wrapper.svg";
 import TextEffect from "@/components/motion-primitives/text-effect";
 import CircularText from "@/components/motion-primitives/circular-text";
 import RotatingText from "@/components/motion-primitives/rotating-text";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Data
+// ─────────────────────────────────────────────────────────────────────────────
+
 const creativeSignals = [
-  "Modern UI",
-  "Animated",
-  "Fast",
-  "Pixel Perfect",
-  "SEO-Friendly",
-  "Performance",
-  "Responsive",
+  "Modern UI", "Animated", "Fast",
+  "Pixel Perfect", "SEO-Friendly", "Performance", "Responsive",
 ];
 
 const stats = [
   {
-    value: "35",
-    suffix: "+",
-    label: "Projects Delivered",
-    description:
-      "I successfully completed over 35 projects — continuously improving and growing.",
+    value: "35", suffix: "+", label: "Projects Delivered",
+    description: "I successfully completed over 35 projects — continuously improving and growing.",
+    pct: 88,
   },
   {
-    value: "40",
-    suffix: "%",
-    label: "Performance Improvement",
-    description:
-      "Up to 40%+ faster load times through performance optimization.",
+    value: "40", suffix: "%", label: "Performance Improvement",
+    description: "Up to 40%+ faster load times through performance optimization.",
+    pct: 40,
   },
   {
-    value: "2",
-    suffix: "+",
-    label: "Years Experience",
-    description:
-      "More than 2 Years of Hands-On Experience in Front-end development.",
+    value: "2", suffix: "+", label: "Years Experience",
+    description: "More than 2 Years of Hands-On Experience in Front-end development.",
+    pct: 25,
   },
 ];
 
+const STAT_ICONS = [
+  <path key="0" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />,
+  <path key="1" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+    d="M13 10V3L4 14h7v7l9-11h-7z" />,
+  <path key="2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
 
 const creativeSignalsCircularText = `${creativeSignals.join(" · ")} · `;
 
@@ -65,46 +66,31 @@ const HERO_HEADLINE_MOTION_VARIANTS = {
   initial: { y: 20, rotateX: 0, scale: 0.98 },
 };
 
-/** Framer tweens interpolate these more evenly than chained CSS transitions. */
-const HERO_STAT_CARD_VARIANTS = {
-  rest: {
-    y: 0,
-    borderColor: "rgba(212, 212, 212, 1)",
-    backgroundColor: "rgba(255, 255, 255, 0.92)",
-    boxShadow: "0 2px 12px rgba(0, 0, 0, 0.045)",
-  },
-  hover: {
-    y: -5,
-    borderColor: "rgba(241, 85, 51, 0.42)",
-    backgroundColor: "rgba(255, 247, 240, 1)",
-    boxShadow: "0 20px 52px rgba(255, 100, 100, 0.14)",
-  },
-};
-
-const HERO_STAT_CARD_TRANSITION = {
-  duration: 0.7,
-  ease: [0.16, 1, 0.3, 1],
-};
-
-/** Ring diameter is a fraction of the intro stack width. */
-const INTRO_RING_MIN_PX = 240;
-const INTRO_RING_WIDTH_RATIO = 0.72;
+const INTRO_RING_MIN_PX = 175;
+const INTRO_RING_WIDTH_RATIO = 0.48;
 const INTRO_RING_SPIN_S = 35;
-/** Hide rotating circular text at this viewport width and below. */
 const INTRO_CIRCULAR_MAX_WIDTH_PX = 640;
+/** Off: skip mounting spinning circular text (layout + RAF). CSS `display:none` alone still ran the animation. */
+const INTRO_CIRCULAR_RING_ENABLED = false;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+function easeOutExpo(t) {
+  return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
 
 function useIntroCircularRingVisible() {
   const [visible, setVisible] = useState(() => {
+    if (!INTRO_CIRCULAR_RING_ENABLED) return false;
     if (typeof window === "undefined") return true;
-    return !window.matchMedia(
-      `(max-width: ${INTRO_CIRCULAR_MAX_WIDTH_PX}px)`,
-    ).matches;
+    return !window.matchMedia(`(max-width: ${INTRO_CIRCULAR_MAX_WIDTH_PX}px)`).matches;
   });
 
   useEffect(() => {
-    const mq = window.matchMedia(
-      `(max-width: ${INTRO_CIRCULAR_MAX_WIDTH_PX}px)`,
-    );
+    if (!INTRO_CIRCULAR_RING_ENABLED) return undefined;
+    const mq = window.matchMedia(`(max-width: ${INTRO_CIRCULAR_MAX_WIDTH_PX}px)`);
     const sync = () => setVisible(!mq.matches);
     sync();
     mq.addEventListener("change", sync);
@@ -113,6 +99,229 @@ function useIntroCircularRingVisible() {
 
   return visible;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HeroStatCounter
+// ─────────────────────────────────────────────────────────────────────────────
+
+function HeroStatCounter({ value, suffix, staggerDelay, triggerCount }) {
+  const wrapRef = useRef(null);
+  const numRef = useRef(null);
+  const animRef = useRef(0);
+  const inView = useInView(wrapRef, { once: true, amount: 0.35 });
+  const target = Number.parseFloat(String(value));
+
+  const runCount = useCallback((dur = 1300, delay = 0) => {
+    cancelAnimationFrame(animRef.current);
+    const start = performance.now() + delay;
+    function frame(now) {
+      const t = Math.min(Math.max((now - start) / dur, 0), 1);
+      if (numRef.current)
+        numRef.current.textContent = String(Math.round(easeOutExpo(t) * target));
+      if (t < 1) animRef.current = requestAnimationFrame(frame);
+    }
+    animRef.current = requestAnimationFrame(frame);
+  }, [target]);
+
+  // Initial count-in when card scrolls into view
+  useEffect(() => {
+    if (!inView || Number.isNaN(target)) return;
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) { if (numRef.current) numRef.current.textContent = String(Math.round(target)); return; }
+    runCount(1300, staggerDelay * 1000);
+  }, [inView]);
+
+  // Re-count on every hover
+  useEffect(() => {
+    if (triggerCount === 0 || !inView) return;
+    runCount(800, 0);
+  }, [triggerCount]);
+
+  return (
+    <div ref={wrapRef} className="flex items-baseline gap-0.5">
+      <span
+        ref={numRef}
+        className="text-6xl leading-none tracking-tight font-inter"
+        style={{ transition: "color .3s ease" }}
+      >
+        0
+      </span>
+      <span className="text-[#F15533] text-5xl font-bold leading-none">{suffix}</span>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HeroStatCard
+// ─────────────────────────────────────────────────────────────────────────────
+
+function HeroStatCard({ stat, index }) {
+  const cardRef = useRef(null);
+  const reduceMotion = useReducedMotion();
+
+  const [hovered, setHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [cardSize, setCardSize] = useState({ w: 0, h: 0 });
+  const [barWidth, setBarWidth] = useState(0);
+  const [triggerCount, setTriggerCount] = useState(0);
+
+  // Fire initial bar fill after mount
+  useEffect(() => {
+    const t = setTimeout(() => setBarWidth(stat.pct), 700 + index * 160);
+    return () => clearTimeout(t);
+  }, []);
+
+  const handleMouseEnter = () => {
+    if (reduceMotion) return;
+    const el = cardRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setCardSize({ w: r.width, h: r.height });
+    setHovered(true);
+    setTriggerCount((c) => c + 1);
+    // Re-animate bar
+    setBarWidth(0);
+    setTimeout(() => setBarWidth(stat.pct), 60);
+  };
+
+  const handleMouseMove = (e) => {
+    if (reduceMotion) return;
+    const r = cardRef.current.getBoundingClientRect();
+    const mx = e.clientX - r.left;
+    const my = e.clientY - r.top;
+    setMousePos({ x: mx, y: my });
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    if (cardRef.current) cardRef.current.style.transform = "";
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        position: "relative",
+        borderRadius: 24,
+        padding: "1.25rem",
+        background: hovered ? "rgba(255,247,240,1)" : "rgba(255,255,255,0.92)",
+        border: `2px dashed ${hovered ? "#F15533" : "rgb(212,212,212)"}`,
+        boxShadow: hovered
+          ? "0 20px 52px rgba(255,100,100,0.14)"
+          : "0 2px 12px rgba(0,0,0,0.045)",
+        overflow: "hidden",
+        cursor: "default",
+        transformStyle: "preserve-3d",
+        willChange: "transform",
+        transition: "transform .25s ease, border-color .4s ease, background .4s ease, box-shadow .4s ease",
+        transform: hovered ? "scale(1.04)" : "scale(1)",
+      }}
+    >
+      {/* Particle constellation */}
+      <ParticleCanvas active={hovered} mousePos={mousePos} size={cardSize} />
+
+      {/* Icon badge */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: 14,
+          right: 14,
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          border: "1.5px dashed #F15533",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: hovered ? 1 : 0,
+          transform: hovered
+            ? "scale(1) rotate(0deg)"
+            : "scale(0.4) rotate(-25deg)",
+          transition: "all .45s cubic-bezier(.34,1.56,.64,1)",
+        }}
+      >
+        <svg
+          viewBox="0 0 24 24"
+          style={{ width: 14, height: 14 }}
+          fill="none"
+          stroke="#F15533"
+        >
+          {STAT_ICONS[index]}
+        </svg>
+      </div>
+
+      {/* Counter */}
+      <HeroStatCounter
+        value={stat.value}
+        suffix={stat.suffix}
+        staggerDelay={index * 0.08}
+        triggerCount={triggerCount}
+      />
+
+      {/* Label */}
+      <div
+        className="text-md font-inter mt-1.5"
+        style={{ fontWeight: 600, color: "#000000" }}
+      >
+        {stat.label}
+      </div>
+
+      {/* Progress bar */}
+      {/* <div
+        style={{
+          height: 3,
+          background: "rgba(0,0,0,0.08)",
+          borderRadius: 2,
+          overflow: "hidden",
+          marginTop: 10,
+        }}
+      >
+        <div
+          style={{
+            height: "100%",
+            borderRadius: 2,
+            background: "#F15533",
+            width: `${barWidth}%`,
+            transition: "width 1.1s cubic-bezier(.22,1,.36,1)",
+          }}
+        />
+      </div> */}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HeroStats
+// ─────────────────────────────────────────────────────────────────────────────
+
+function HeroStats() {
+  return (
+    <div id="projects" className="relative z-2">
+      <div className="container">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto mt-12">
+          {stats.map((stat, index) => (
+            <div key={stat.label} className="flex flex-col text-start gap-3">
+              <HeroStatCard stat={stat} index={index} />
+              <div className="text-sm text-[#000000] font-medium leading-relaxed px-2 font-inter">
+                {stat.description}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HeroCreativeHead
+// ─────────────────────────────────────────────────────────────────────────────
 
 function HeroCreativeHead() {
   let charOffset = 0;
@@ -130,33 +339,25 @@ function HeroCreativeHead() {
           <span className="hero-headline__line">
             <TextEffect
               text={HERO_HEADLINE_L1_PRE}
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L1_PRE.length)}
             />
             <TextEffect
               text={HERO_HEADLINE_L1_HIGHLIGHT}
               segmentClassName="highlight"
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L1_HIGHLIGHT.length)}
             />
             <TextEffect
               text={HERO_HEADLINE_L1_MID}
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L1_MID.length)}
             />
             <TextEffect
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_ROTATING_STAGGER_CHARS)}
             >
@@ -170,8 +371,7 @@ function HeroCreativeHead() {
                   transition={{ type: "spring", damping: 22, stiffness: 400 }}
                   staggerDuration={0.08}
                   staggerFrom="last"
-                  auto
-                  loop
+                  auto loop
                 />
               </span>
             </TextEffect>
@@ -179,9 +379,7 @@ function HeroCreativeHead() {
           <span className="hero-headline__line">
             <TextEffect
               text={HERO_HEADLINE_L2}
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L2.length)}
             />
@@ -189,9 +387,7 @@ function HeroCreativeHead() {
           <span className="hero-headline__line">
             <TextEffect
               text={HERO_HEADLINE_L3}
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L3.length)}
             />
@@ -199,18 +395,14 @@ function HeroCreativeHead() {
           <span className="hero-headline__line">
             <TextEffect
               text={HERO_HEADLINE_L4_PRE}
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L4_PRE.length)}
             />
             <TextEffect
               text={HERO_HEADLINE_L4_HIGHLIGHT}
               segmentClassName="highlight"
-              type="chars"
-              inView
-              inViewOnce
+              type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L4_HIGHLIGHT.length)}
             />
@@ -221,92 +413,9 @@ function HeroCreativeHead() {
   );
 }
 
-/** Counts `value` when this block enters the viewport (once per page load). */
-function HeroStatCounter({ value, suffix, staggerDelay }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, amount: 0.35 });
-  const target = Number.parseFloat(String(value));
-  const [display, setDisplay] = useState(0);
-
-  useEffect(() => {
-    if (!inView || Number.isNaN(target)) return undefined;
-
-    const reduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
-      setDisplay(Math.round(target));
-      return undefined;
-    }
-
-    setDisplay(0);
-    const controls = animate(0, target, {
-      duration: 1.65,
-      delay: staggerDelay,
-      ease: [0.22, 1, 0.36, 1],
-      onUpdate: (latest) => setDisplay(Math.round(latest)),
-    });
-    return () => controls.stop();
-  }, [inView, staggerDelay, target]);
-
-  return (
-    <div
-      ref={ref}
-      className="text-6xl leading-none tracking-tight text-[#000000] font-inter"
-    >
-      {display}
-      <span className="text-[#F15533]">{suffix}</span>
-    </div>
-  );
-}
-
-function HeroStatCard({ children }) {
-  const reduceMotion = useReducedMotion();
-  return (
-    <motion.div
-      className="rounded-3xl border-2 border-dashed p-5 transform-gpu"
-      initial="rest"
-      animate="rest"
-      whileHover={reduceMotion ? undefined : "hover"}
-      variants={HERO_STAT_CARD_VARIANTS}
-      transition={HERO_STAT_CARD_TRANSITION}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function HeroStats() {
-  return (
-    <div id="projects" className="relative z-2">
-      {/* Above intro-orbit (negative top pulls the ring over this row — z-index restores hover targets). */}
-      <div className="container">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto mt-12">
-          {stats.map((stat, index) => (
-            <div key={stat.label} className="flex flex-col text-start gap-3">
-              <HeroStatCard>
-                <HeroStatCounter
-                  value={stat.value}
-                  suffix={stat.suffix}
-                  staggerDelay={index * 0.08}
-                />
-                <div
-                  className="text-md text-[#000000] mt-1.5 font-inter"
-                  style={{ fontWeight: "600" }}
-                >
-                  {stat.label}
-                </div>
-              </HeroStatCard>
-              <div className="text-sm text-[#000000] font-medium leading-relaxed px-2 font-inter">
-                {stat.description}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// HeroCreativeRing
+// ─────────────────────────────────────────────────────────────────────────────
 
 function HeroCreativeRing() {
   const stackRef = useRef(null);
@@ -315,13 +424,10 @@ function HeroCreativeRing() {
 
   useLayoutEffect(() => {
     const el = stackRef.current;
-    if (!el || typeof ResizeObserver === "undefined") return undefined;
-    if (!showCircularRing) return undefined;
+    if (!el || typeof ResizeObserver === "undefined" || !showCircularRing) return undefined;
 
     const measure = () => {
-      const w = Math.round(
-        el.getBoundingClientRect().width * INTRO_RING_WIDTH_RATIO,
-      );
+      const w = Math.round(el.getBoundingClientRect().width * INTRO_RING_WIDTH_RATIO);
       setRingDiameter(Math.max(INTRO_RING_MIN_PX, w));
     };
 
@@ -348,7 +454,6 @@ function HeroCreativeRing() {
             text={creativeSignalsCircularText}
             spinDuration={INTRO_RING_SPIN_S}
             diameter={ringDiameter}
-            interactive={false}
             className="hero-creative__intro-circular-text"
           />
         </motion.div>
@@ -357,16 +462,14 @@ function HeroCreativeRing() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// About (root export)
+// ─────────────────────────────────────────────────────────────────────────────
+
 export function About() {
   return (
     <div className="container">
       <section id="about" className="section margin-top--large hero-creative">
-        {/* <div className="bg-[#F3F5F8] rounded-full py-1 flex items-center gap-3 w-fit justify-center mx-auto pr-4 pl-1 mb-8">
-          <img src={icon_wrapper} alt="icon_wrapper" className="w-8 h-8" />
-          <span className="text-[#0F0F0F] font-inter font-medium text-sm whitespace-nowrap">
-            About Me
-          </span>
-        </div> */}
         <HeroCreativeHead />
       </section>
 
