@@ -276,7 +276,7 @@ function HeroStatCard({ stat, index }) {
 
 function HeroStats() {
   return (
-    <div id="projects" className="relative z-2">
+    <div className="relative z-2">
       <div className="container">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-6xl mx-auto mt-12">
           {stats.map((stat, index) => (
