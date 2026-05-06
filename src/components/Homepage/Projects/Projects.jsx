@@ -166,7 +166,7 @@ function Projects() {
         <section
             id="projects"
             ref={sectionRef}
-            className="section margin-top--large relative overflow-hidden pt-20 sm:pt-24"
+            className="section margin-top--large relative  pt-20 sm:pt-24"
         >
 
             <motion.div
