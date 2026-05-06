@@ -324,6 +324,7 @@ function HeroStats() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function HeroCreativeHead() {
+  const reduceMotion = useReducedMotion();
   let charOffset = 0;
   const staggerMs = HERO_HEADLINE_MOTION_VARIANTS.stagger * 1000;
   const nextDelay = (len) => {
@@ -342,6 +343,7 @@ function HeroCreativeHead() {
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L1_PRE.length)}
+              proximityHover={!reduceMotion}
             />
             <TextEffect
               text={HERO_HEADLINE_L1_HIGHLIGHT}
@@ -349,17 +351,20 @@ function HeroCreativeHead() {
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L1_HIGHLIGHT.length)}
+              proximityHover={!reduceMotion}
             />
             <TextEffect
               text={HERO_HEADLINE_L1_MID}
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L1_MID.length)}
+              proximityHover={!reduceMotion}
             />
             <TextEffect
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_ROTATING_STAGGER_CHARS)}
+              proximityHover={!reduceMotion}
             >
               <span className="hero-headline__rotating-pill">
                 <RotatingText
@@ -382,6 +387,7 @@ function HeroCreativeHead() {
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L2.length)}
+              proximityHover={!reduceMotion}
             />
           </span>
           <span className="hero-headline__line">
@@ -390,6 +396,7 @@ function HeroCreativeHead() {
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L3.length)}
+              proximityHover={!reduceMotion}
             />
           </span>
           <span className="hero-headline__line">
@@ -398,6 +405,7 @@ function HeroCreativeHead() {
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L4_PRE.length)}
+              proximityHover={!reduceMotion}
             />
             <TextEffect
               text={HERO_HEADLINE_L4_HIGHLIGHT}
@@ -405,6 +413,7 @@ function HeroCreativeHead() {
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
               delay={nextDelay(HERO_HEADLINE_L4_HIGHLIGHT.length)}
+              proximityHover={!reduceMotion}
             />
           </span>
         </h2>

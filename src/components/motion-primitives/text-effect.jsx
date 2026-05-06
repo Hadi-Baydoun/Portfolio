@@ -21,10 +21,10 @@ const ConnectedItem = ({
     entranceTransition,
     revealDelay,
     type,
-    itemRef,
     segmentClassName,
 }) => {
     const distance = useMotionValue(0);
+    const elRef = useRef(null);
 
     // Batch mouse tracking into a single effect
     React.useEffect(() => {
@@ -44,7 +44,7 @@ const ConnectedItem = ({
                     return;
                 }
 
-                const el = itemRef.current;
+                const el = elRef.current;
                 if (!el) return;
 
                 const rect = el.getBoundingClientRect();
@@ -90,7 +90,7 @@ const ConnectedItem = ({
 
     return (
         <motion.span
-            ref={itemRef}
+            ref={elRef}
             className={segmentClassName}
             initial={initialItem}
             animate={animateTarget}
@@ -137,7 +137,6 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
     const localRef = useRef(null);
     const mouseX = useMotionValue(-1000);
     const mouseY = useMotionValue(-1000);
-    const itemRefs = useRef(new Map());
 
     useImperativeHandle(ref, () => localRef.current);
 
@@ -290,7 +289,6 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
                                     animateTarget={animateTarget}
                                     entranceTransition={entranceTransition}
                                     revealDelay={(delay / 1000) + (entry.index * stagger)}
-                                    itemRef={() => itemRefs.current.get(entry.key) ?? {}}
                                     segmentClassName={segmentClassName}
                                 />
                             ) : (
@@ -315,7 +313,6 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
                                                 animateTarget={animateTarget}
                                                 entranceTransition={entranceTransition}
                                                 revealDelay={(delay / 1000) + (index * stagger)}
-                                                itemRef={() => itemRefs.current.get(ck) ?? {}}
                                                 segmentClassName={segmentClassName}
                                             />
                                         );
@@ -341,7 +338,6 @@ const SplittingText = forwardRef(function SplittingText(props, ref) {
                                     animateTarget={animateTarget}
                                     entranceTransition={entranceTransition}
                                     revealDelay={(delay / 1000) + (index * stagger)}
-                                    itemRef={() => itemRefs.current.get(itemKey) ?? {}}
                                     segmentClassName={segmentClassName}
                                 />
                             );
