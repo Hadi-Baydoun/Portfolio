@@ -205,7 +205,7 @@ function Projects() {
             </motion.div>
 
             <motion.div
-                className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 pb-8 px-2"
+                className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 pb-8 px-4 md:px-8 lg:px-10"
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, amount: 0.1 }}
