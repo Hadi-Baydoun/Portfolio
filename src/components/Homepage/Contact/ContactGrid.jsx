@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ExternalLink, FileDown, Mail } from "lucide-react";
 import githubIcon from "@/assets/github.svg";

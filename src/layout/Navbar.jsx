@@ -8,8 +8,8 @@ const CONTACT_EMAIL = "hadibaydoun17@gmail.com";
 
 const NAV_LINKS = [
   { label: "About", hash: "about" },
-  { label: "Projects", hash: "projects" },
   { label: "Work Experience", hash: "experience" },
+  { label: "Projects", hash: "projects" },
   { label: "Skills", hash: "skills" },
   { label: "Contact Me", hash: "contact" },
 ];
@@ -74,7 +74,7 @@ const Navbar = () => {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-100 flex items-center justify-between px-6 py-4 transition-colors duration-300 ${navSolid ? "backdrop-blur-sm bg-black/10" : ""
+        className={`fixed top-0 left-0 right-0 z-100 flex items-center justify-between px-6 py-4 transition-colors duration-300 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:justify-normal md:gap-4 ${navSolid ? "backdrop-blur-sm bg-black/10" : ""
           } ${mobileMenuOpen ? "pointer-events-none" : ""}`}
         initial={{ opacity: 0, y: -20 }}
         animate={{
@@ -88,6 +88,7 @@ const Navbar = () => {
         }
       >
         <motion.div
+          className="justify-self-start min-w-0"
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
@@ -102,7 +103,7 @@ const Navbar = () => {
         </motion.div>
 
         <motion.div
-          className="hidden md:flex items-center gap-1 bg-white/60 backdrop-blur-md rounded-full px-4 py-2 shadow-sm"
+          className="hidden md:flex md:justify-self-center items-center gap-1 bg-white/60 backdrop-blur-md rounded-full px-4 py-2 shadow-sm"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -127,7 +128,7 @@ const Navbar = () => {
         </motion.div>
 
         <motion.div
-          className="hidden md:flex items-center gap-2"
+          className="hidden md:flex md:justify-self-end items-center gap-2"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}

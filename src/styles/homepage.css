@@ -123,6 +123,7 @@
   margin: 0;
   margin-top: -35px;
   display: block;
+  text-align: center;
   font-size: clamp(1.5em, 12vw, 3em);
   line-height: 100%;
   text-transform: uppercase;

@@ -1,28 +1,8 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import imgTopShape from "@/assets/Homepage/top-shape.svg";
 import imgFooterDecoration1 from "@/assets/home-footer-decoration-1.svg";
 import imgFooterDecoration2 from "@/assets/home-footer-decoration-2.svg";
 
 const Footer = () => {
-	const location = useLocation();
-	const navigate = useNavigate();
-
-	const goToHashSection = (e, pathname, sectionId = "hero") => {
-		const hash = `#${sectionId}`;
-		if (location.pathname === pathname && location.hash === hash) {
-			e?.preventDefault();
-			document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-			return;
-		}
-
-		navigate(`${pathname}${hash}`);
-		setTimeout(() => {
-			document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-		}, 50);
-	};
-
-	const goToContact = (e) => goToHashSection(e, "/contact");
-
 	return (
 		<footer className="footer-home">
 			<img className="footer-top-shape" src={imgTopShape} alt="footer top shape" />

@@ -73,7 +73,6 @@ export function StepArrow({ direction = "left", delay = 0, index }) {
     const isLeft = direction === "left";
 
     const tailX = isLeft ? 4 : 76;   // where the dot sits (near card border)
-    const headX = isLeft ? 76 : 4;    // where the arrowhead lands
 
     // Cubic bezier: start near the card edge at top, curve across, end near next card edge at bottom
     const path = isLeft

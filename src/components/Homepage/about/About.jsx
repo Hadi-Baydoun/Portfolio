@@ -1,7 +1,13 @@
-import { useLayoutEffect, useRef, useState, useEffect, useCallback } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ParticleCanvas } from "@/components/motion-primitives/particle-canvas";
-import icon_wrapper from "@/assets/icon_wrapper.svg";
 import TextEffect from "@/components/motion-primitives/text-effect";
 import CircularText from "@/components/motion-primitives/circular-text";
 import RotatingText from "@/components/motion-primitives/rotating-text";
@@ -164,14 +170,7 @@ function HeroStatCard({ stat, index }) {
   const [hovered, setHovered] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [cardSize, setCardSize] = useState({ w: 0, h: 0 });
-  const [barWidth, setBarWidth] = useState(0);
   const [triggerCount, setTriggerCount] = useState(0);
-
-  // Fire initial bar fill after mount
-  useEffect(() => {
-    const t = setTimeout(() => setBarWidth(stat.pct), 700 + index * 160);
-    return () => clearTimeout(t);
-  }, []);
 
   const handleMouseEnter = () => {
     if (reduceMotion) return;
@@ -181,9 +180,6 @@ function HeroStatCard({ stat, index }) {
     setCardSize({ w: r.width, h: r.height });
     setHovered(true);
     setTriggerCount((c) => c + 1);
-    // Re-animate bar
-    setBarWidth(0);
-    setTimeout(() => setBarWidth(stat.pct), 60);
   };
 
   const handleMouseMove = (e) => {
@@ -325,13 +321,35 @@ function HeroStats() {
 
 function HeroCreativeHead() {
   const reduceMotion = useReducedMotion();
-  let charOffset = 0;
-  const staggerMs = HERO_HEADLINE_MOTION_VARIANTS.stagger * 1000;
-  const nextDelay = (len) => {
-    const delay = charOffset * staggerMs;
-    charOffset += len;
-    return delay;
-  };
+
+  const [
+    dL1Pre,
+    dL1Highlight,
+    dL1Mid,
+    dRotate,
+    dL2,
+    dL3,
+    dL4Pre,
+    dL4Highlight,
+  ] = useMemo(() => {
+    const staggerMs = HERO_HEADLINE_MOTION_VARIANTS.stagger * 1000;
+    const lengths = [
+      HERO_HEADLINE_L1_PRE.length,
+      HERO_HEADLINE_L1_HIGHLIGHT.length,
+      HERO_HEADLINE_L1_MID.length,
+      HERO_HEADLINE_ROTATING_STAGGER_CHARS,
+      HERO_HEADLINE_L2.length,
+      HERO_HEADLINE_L3.length,
+      HERO_HEADLINE_L4_PRE.length,
+      HERO_HEADLINE_L4_HIGHLIGHT.length,
+    ];
+    let offset = 0;
+    return lengths.map((len) => {
+      const delay = offset * staggerMs;
+      offset += len;
+      return delay;
+    });
+  }, []);
 
   return (
     <div className="hero-creative__head-stack max-w-4xl mx-auto">
@@ -342,7 +360,7 @@ function HeroCreativeHead() {
               text={HERO_HEADLINE_L1_PRE}
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_L1_PRE.length)}
+              delay={dL1Pre}
               proximityHover={!reduceMotion}
             />
             <TextEffect
@@ -350,20 +368,20 @@ function HeroCreativeHead() {
               segmentClassName="highlight"
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_L1_HIGHLIGHT.length)}
+              delay={dL1Highlight}
               proximityHover={!reduceMotion}
             />
             <TextEffect
               text={HERO_HEADLINE_L1_MID}
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_L1_MID.length)}
+              delay={dL1Mid}
               proximityHover={!reduceMotion}
             />
             <TextEffect
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_ROTATING_STAGGER_CHARS)}
+              delay={dRotate}
               proximityHover={!reduceMotion}
             >
               <span className="hero-headline__rotating-pill">
@@ -386,7 +404,7 @@ function HeroCreativeHead() {
               text={HERO_HEADLINE_L2}
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_L2.length)}
+              delay={dL2}
               proximityHover={!reduceMotion}
             />
           </span>
@@ -395,7 +413,7 @@ function HeroCreativeHead() {
               text={HERO_HEADLINE_L3}
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_L3.length)}
+              delay={dL3}
               proximityHover={!reduceMotion}
             />
           </span>
@@ -404,7 +422,7 @@ function HeroCreativeHead() {
               text={HERO_HEADLINE_L4_PRE}
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_L4_PRE.length)}
+              delay={dL4Pre}
               proximityHover={!reduceMotion}
             />
             <TextEffect
@@ -412,7 +430,7 @@ function HeroCreativeHead() {
               segmentClassName="highlight"
               type="chars" inView inViewOnce
               motionVariants={HERO_HEADLINE_MOTION_VARIANTS}
-              delay={nextDelay(HERO_HEADLINE_L4_HIGHLIGHT.length)}
+              delay={dL4Highlight}
               proximityHover={!reduceMotion}
             />
           </span>
